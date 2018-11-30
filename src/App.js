@@ -5,7 +5,7 @@ import MobxStore from './MobxStore'
 import { Menu } from 'semantic-ui-react'
 import { NavItem } from './components/Elements/NavItem'
 // import About from './components/About'
-import Home from './components/Home'
+import BostonHousing from './components/BostonHousing'
 import 'semantic-ui-css/semantic.min.css'
 import './App.css'
 
@@ -18,11 +18,11 @@ const App = () => (
     <Router>
       <div>
         <Menu secondary={true} pointing={true}>
-          <Menu.Item as={NavItem} to='/' name='home' />
+          <Menu.Item as={NavItem} to='/' name='boston-housing' />
           {/* <Menu.Item as={NavItem} to='/about' name='about' /> */}
         </Menu>
         <div className='mainContent'>
-          <Route exact={true} path='/' component={Home} />
+          <Route exact={true} path='/' component={BostonHousing} />
           {/* <Route path='/about' component={About} /> */}
         </div>
       </div>

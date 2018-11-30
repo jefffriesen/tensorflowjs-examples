@@ -13,7 +13,8 @@ import {
   getHomerStats,
   getSummaryStats,
   calculateNewLoads
-} from './utils/helpers'
+} from './utils/homerHelpers'
+import { loadCsv } from './utils/bostonHelpers'
 import { homerFiles, applianceFiles } from './utils/fileInfo'
 import { fieldDefinitions } from './utils/fieldDefinitions'
 configure({ enforceActions: 'observed' })
@@ -25,6 +26,7 @@ class MobxStore {
   constructor() {
     autorun(() => this.fetchHomer(this.activeHomerFileInfo))
     autorun(() => this.fetchAppliance(this.activeApplianceFileInfo))
+    autorun(() => this.fetchBostonFiles(this.bostonFilesInfo))
   }
 
   activeHomer = null
@@ -34,6 +36,13 @@ class MobxStore {
   homerIsLoading = false
   applianceIsLoading = false
   appCalculating = false
+
+  bostonFiles = {
+    testData: null,
+    testTarget: null,
+    trainData: null,
+    trainTarget: null
+  }
 
   // Model inputs must have a definition in the fieldDefinitions file
   modelInputs = {
@@ -56,17 +65,13 @@ class MobxStore {
     if (_.isEmpty(this.activeHomer) || _.isEmpty(this.activeAppliance)) {
       return null
     }
-    const t0 = performance.now()
-    const calculatedNewLoads = calculateNewLoads({
+    return calculateNewLoads({
       homer: this.activeHomer,
       appliance: this.activeAppliance,
       modelInputs: this.modelInputs,
       homerStats: this.homerStats,
       constants: {}
     })
-    const t1 = performance.now()
-    console.log('calculateNewLoads took ' + _.round(t1 - t0) + ' milliseconds.')
-    return calculatedNewLoads
   }
 
   get homerStats() {
@@ -97,6 +102,29 @@ class MobxStore {
     })
   }
 
+  async fetchBostonFiles(fileInfos) {
+    const [
+      trainFeatures,
+      trainTarget,
+      testFeatures,
+      testTarget
+    ] = await Promise.all([
+      loadCsv('train-data.csv'),
+      loadCsv('train-target.csv'),
+      loadCsv('test-data.csv'),
+      loadCsv('test-target.csv')
+    ])
+    runInAction(() => {
+      this.bostonFiles = {
+        trainFeatures,
+        trainTarget,
+        testFeatures,
+        testTarget
+      }
+      this.bostonIsLoading = false
+    })
+  }
+
   // Choose HOMER or Appliance File Form changes
   setActiveHomerFile(event, data) {
     this.activeHomerFileInfo = _.find(homerFiles, {
@@ -114,6 +142,8 @@ class MobxStore {
   onModelInputChange(fieldKey, value) {
     this.modelInputs[fieldKey] = value
   }
+
+  // Boston Housing data
 }
 
 decorate(MobxStore, {
@@ -132,7 +162,11 @@ decorate(MobxStore, {
   summaryStats: computed,
   setActiveHomerFile: action.bound,
   setActiveApplianceFile: action.bound,
-  onModelInputChange: action.bound
+  onModelInputChange: action.bound,
+
+  fetchBostonFiles: action,
+  bostonFilesInfo: observable,
+  bostonFiles: observable
 })
 
 export default MobxStore

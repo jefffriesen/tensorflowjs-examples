@@ -623,6 +623,8 @@ export async function fetchFile(fileInfo) {
         return processHomerFile(data, fileInfo)
       case 'appliance':
         return processApplianceFile(data, fileInfo)
+      case 'boston':
+        return data
       default:
         throw new Error(
           `File fetched does not have a known type: ${JSON.stringify(fileInfo)}`
