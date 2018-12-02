@@ -14,9 +14,14 @@
     "react-dom": "^16.6.3",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
+    "react-vega": "^4.0.2",
+    "react-vega-lite": "^2.0.2",
     "recharts": "^1.4.1",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.83.0"
+    "semantic-ui-react": "^0.83.0",
+    "vega-embed": "^3.24.2",
+    "vega-lib": "^4.3.0",
+    "vega-lite": "^3.0.0-rc8"
   },
   "scripts": {
     "start": "react-scripts start",

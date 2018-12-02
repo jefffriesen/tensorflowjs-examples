@@ -13,36 +13,75 @@ import {
   getHomerStats,
   getSummaryStats,
   calculateNewLoads
-} from './utils/homerHelpers'
-import { loadCsv } from './utils/bostonHelpers'
-import { homerFiles, applianceFiles } from './utils/fileInfo'
-import { fieldDefinitions } from './utils/fieldDefinitions'
+} from '../../utils/homerHelpers'
+import { loadCsv } from '../BostonHousing/bostonHelpers'
+import { homerFiles, applianceFiles } from '../../utils/fileInfo'
+import { fieldDefinitions } from '../../utils/fieldDefinitions'
+
+import { generateCurveData } from '../CurveFitting/utils'
 configure({ enforceActions: 'observed' })
 
 const initHomerPath = './data/homer/12-50 Baseline.csv'
 const initAppliancePath = './data/appliances/rice_mill_usage_profile.csv'
 
-class MobxStore {
+class HomerStore {
   constructor() {
     autorun(() => this.fetchHomer(this.activeHomerFileInfo))
     autorun(() => this.fetchAppliance(this.activeApplianceFileInfo))
-    autorun(() => this.fetchBostonFiles(this.bostonFilesInfo))
   }
 
-  activeHomer = null
-  activeAppliance = null
-  activeHomerFileInfo = _.find(homerFiles, { path: initHomerPath })
-  activeApplianceFileInfo = _.find(applianceFiles, { path: initAppliancePath })
-  homerIsLoading = false
-  applianceIsLoading = false
-  appCalculating = false
+  /**
+   * Fit curve to synthetic data
+   * https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core
+   */
+  trueCoefficients = { a: -0.8, b: -0.2, c: 0.9, d: 0.5 }
 
+  get trainingCurveData() {
+    return generateCurveData(100, this.trueCoefficients)
+  }
+
+  /**
+   * Boston Housing
+   */
   bostonFiles = {
     testData: null,
     testTarget: null,
     trainData: null,
     trainTarget: null
   }
+
+  async fetchBostonFiles(fileInfos) {
+    const [
+      trainFeatures,
+      trainTarget,
+      testFeatures,
+      testTarget
+    ] = await Promise.all([
+      loadCsv('train-data.csv'),
+      loadCsv('train-target.csv'),
+      loadCsv('test-data.csv'),
+      loadCsv('test-target.csv')
+    ])
+    runInAction(() => {
+      this.bostonFiles = {
+        trainFeatures,
+        trainTarget,
+        testFeatures,
+        testTarget
+      }
+      this.bostonIsLoading = false
+    })
+  }
+
+  /**
+   * HOMER battery analysis
+   */
+  activeHomer = null
+  activeAppliance = null
+  activeHomerFileInfo = _.find(homerFiles, { path: initHomerPath })
+  activeApplianceFileInfo = _.find(applianceFiles, { path: initAppliancePath })
+  homerIsLoading = false
+  applianceIsLoading = false
 
   // Model inputs must have a definition in the fieldDefinitions file
   modelInputs = {
@@ -102,29 +141,6 @@ class MobxStore {
     })
   }
 
-  async fetchBostonFiles(fileInfos) {
-    const [
-      trainFeatures,
-      trainTarget,
-      testFeatures,
-      testTarget
-    ] = await Promise.all([
-      loadCsv('train-data.csv'),
-      loadCsv('train-target.csv'),
-      loadCsv('test-data.csv'),
-      loadCsv('test-target.csv')
-    ])
-    runInAction(() => {
-      this.bostonFiles = {
-        trainFeatures,
-        trainTarget,
-        testFeatures,
-        testTarget
-      }
-      this.bostonIsLoading = false
-    })
-  }
-
   // Choose HOMER or Appliance File Form changes
   setActiveHomerFile(event, data) {
     this.activeHomerFileInfo = _.find(homerFiles, {
@@ -146,14 +162,21 @@ class MobxStore {
   // Boston Housing data
 }
 
-decorate(MobxStore, {
+decorate(HomerStore, {
+  // Curve fitting
+
+  // Boston Housing
+  fetchBostonFiles: action,
+  bostonFilesInfo: observable,
+  bostonFiles: observable,
+
+  // Homer
   activeHomer: observable,
   activeHomerFileInfo: observable,
   activeAppliance: observable,
   activeApplianceFileInfo: observable,
   homerIsLoading: observable,
   applianceIsLoading: observable,
-  // appCalculating: observable,
   modelInputs: observable,
   fetchHomer: action,
   fetchAppliance: action,
@@ -162,12 +185,7 @@ decorate(MobxStore, {
   summaryStats: computed,
   setActiveHomerFile: action.bound,
   setActiveApplianceFile: action.bound,
-  onModelInputChange: action.bound,
-
-  fetchBostonFiles: action,
-  bostonFilesInfo: observable,
-  bostonFiles: observable
+  onModelInputChange: action.bound
 })
 
-export default MobxStore
-// export let mobxStore = new MobxStore()
+export default HomerStore

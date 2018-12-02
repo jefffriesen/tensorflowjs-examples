@@ -58,4 +58,4 @@ class BostonHousing extends Component {
   }
 }
 
-export default inject('store')(observer(BostonHousing))
+export default inject('bostonStore')(observer(BostonHousing))
