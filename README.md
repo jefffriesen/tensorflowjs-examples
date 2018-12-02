@@ -1,3 +1,14 @@
+## 1. Fitting a curve to synthetic data
+https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core
+
+
+## 2. Boston Housing Price Prediction
+https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing
+
+## HOMER Battery State of Charge Curve Fitting
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
