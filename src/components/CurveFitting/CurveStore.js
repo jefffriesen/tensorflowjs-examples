@@ -1,19 +1,20 @@
-// import _ from 'lodash'
+import _ from 'lodash'
 import * as tf from '@tensorflow/tfjs'
 import {
   configure,
   observable,
   decorate,
-  // action,
-  // runInAction,
-  computed
-  // autorun
+  action,
+  runInAction,
+  computed,
+  autorun
 } from 'mobx'
 import {
   predict,
   plottableDataFn,
   plottableDataAndPredictionsFn,
-  generateCurveData
+  generateCurveData,
+  trainFn
 } from './utils'
 configure({ enforceActions: 'observed' })
 
@@ -36,23 +37,28 @@ configure({ enforceActions: 'observed' })
  */
 
 class CurveStore {
+  constructor() {
+    autorun(() => this.train(this.trainedCoefficients))
+  }
+
   // '...Vals' are plain numbers instead of tensors
   seedCoefficientVals = {
-    a: Math.random(),
-    b: Math.random(),
-    c: Math.random(),
-    d: Math.random()
+    a: 0.1, // Math.random(),
+    b: 0.2, // Math.random(),
+    c: 0.3, // Math.random(),
+    d: 0.4 // Math.random()
   }
   trueCoefficientVals = { a: -0.8, b: -0.2, c: 0.9, d: 0.5 }
 
-  // seedCoefficients and trainedCoefficients are tensor variables
+  // seedCoefficients and trainedCoefficients are tensor variables.
   seedCoefficients = {
     a: tf.variable(tf.scalar(this.seedCoefficientVals.a)),
     b: tf.variable(tf.scalar(this.seedCoefficientVals.b)),
     c: tf.variable(tf.scalar(this.seedCoefficientVals.c)),
     d: tf.variable(tf.scalar(this.seedCoefficientVals.d))
   }
-  // These will be mutated. This can probably be cloned from seedCoefficients
+  // These will be mutated during training.
+  // This can probably be cloned from seedCoefficients
   trainedCoefficients = {
     a: tf.variable(tf.scalar(this.seedCoefficientVals.a)),
     b: tf.variable(tf.scalar(this.seedCoefficientVals.b)),
@@ -62,6 +68,7 @@ class CurveStore {
   numIterations = 75
   learningRate = 0.5
   optimizer = tf.train.sgd(this.learningRate)
+  isTraining = false
 
   // May have to break this out into different functions:
   // 1. trainingDataCuve
@@ -86,6 +93,23 @@ class CurveStore {
     )
   }
 
+  async train(coeff) {
+    this.isTraining = true
+    if (_.isEmpty(this.trainedCoefficients)) {
+      return null
+    }
+    const trainedCoefficients = await trainFn(
+      this.trainingData,
+      this.trainedCoefficients,
+      this.numIterations,
+      this.optimizer
+    )
+    runInAction(() => {
+      this.trainedCoefficients = trainedCoefficients
+      this.isTraining = false
+    })
+  }
+
   // get predictionsAfterTraining() {
   //   // predict(this.trainingData.xs)
   //   return null
@@ -105,7 +129,8 @@ decorate(CurveStore, {
   trainingData: computed,
   plottableTrainingData: computed,
   predictionsBeforeTrainingData: computed,
-  plottablePredictionsBeforeTraining: computed
+  plottablePredictionsBeforeTraining: computed,
+  train: action
   // predictionsAfterTraining: computed,
   // plottableDataAndPredictionBefore: computed,
   // plottableDataAndPredictionAfter: computed

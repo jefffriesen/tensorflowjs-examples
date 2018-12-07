@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
-import { Grid } from 'semantic-ui-react'
+import { Grid, Dimmer, Loader, Segment, Image } from 'semantic-ui-react'
 import {
   ComposedChart,
   Line,
@@ -18,7 +18,8 @@ class CurveFitting extends Component {
   render() {
     const {
       plottableTrainingData,
-      plottablePredictionsBeforeTraining
+      plottablePredictionsBeforeTraining,
+      isTraining
     } = this.props.curveStore
 
     // Composite scatter charts need both an x and y, instead of a 'pred' key
@@ -45,7 +46,9 @@ class CurveFitting extends Component {
           <Grid.Row>
             <Grid.Column>
               <h5>Original Data (Synthetic)</h5>
-              True coefficients: a=-0.800, b=-0.200, c=0.900, d=0.500
+              True coefficients:
+              {/* TODO */}
+              {/* a=-0.800, b=-0.200, c=0.900, d=0.500 */}
               <ScatterChart
                 width={400}
                 height={400}
@@ -85,6 +88,9 @@ class CurveFitting extends Component {
             <Grid.Column>
               <h5>Fit curve with learned coefficients (after training)</h5>
               Learned coefficients:
+              <Segment>
+                <TrainingChart isTraining={true} />
+              </Segment>
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -94,3 +100,19 @@ class CurveFitting extends Component {
 }
 
 export default inject('curveStore')(observer(CurveFitting))
+
+const TrainingChart = isTraining => {
+  if (isTraining) {
+    return (
+      <Segment basic>
+        <Dimmer active inverted>
+          <Loader>Training</Loader>
+        </Dimmer>
+        {/* <Image src='/images/wireframe/short-paragraph.png' height={260} /> */}
+        <div style={{ height: 260 }} />
+      </Segment>
+    )
+  } else {
+    return null
+  }
+}
