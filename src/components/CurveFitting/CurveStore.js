@@ -36,60 +36,79 @@ configure({ enforceActions: 'observed' })
  */
 
 class CurveStore {
-  trueCoefficients = { a: -0.8, b: -0.2, c: 0.9, d: 0.5 }
+  // '...Vals' are plain numbers instead of tensors
+  seedCoefficientVals = {
+    a: Math.random(),
+    b: Math.random(),
+    c: Math.random(),
+    d: Math.random()
+  }
+  trueCoefficientVals = { a: -0.8, b: -0.2, c: 0.9, d: 0.5 }
+
+  // seedCoefficients and trainedCoefficients are tensor variables
+  seedCoefficients = {
+    a: tf.variable(tf.scalar(this.seedCoefficientVals.a)),
+    b: tf.variable(tf.scalar(this.seedCoefficientVals.b)),
+    c: tf.variable(tf.scalar(this.seedCoefficientVals.c)),
+    d: tf.variable(tf.scalar(this.seedCoefficientVals.d))
+  }
+  // These will be mutated. This can probably be cloned from seedCoefficients
   trainedCoefficients = {
-    a: tf.variable(tf.scalar(Math.random())),
-    b: tf.variable(tf.scalar(Math.random())),
-    c: tf.variable(tf.scalar(Math.random())),
-    d: tf.variable(tf.scalar(Math.random()))
+    a: tf.variable(tf.scalar(this.seedCoefficientVals.a)),
+    b: tf.variable(tf.scalar(this.seedCoefficientVals.b)),
+    c: tf.variable(tf.scalar(this.seedCoefficientVals.c)),
+    d: tf.variable(tf.scalar(this.seedCoefficientVals.d))
   }
   numIterations = 75
   learningRate = 0.5
   optimizer = tf.train.sgd(this.learningRate)
 
+  // May have to break this out into different functions:
+  // 1. trainingDataCuve
+  // 2. predictedDataCurve
   get trainingData() {
-    return generateCurveData(100, this.trueCoefficients)
+    return generateCurveData(100, this.trueCoefficientVals)
   }
 
-  get predictionsBefore() {
-    // predict(this.trainingData.xs)
-    return null
-  }
-
-  get predictionsAfter() {
-    // predict(this.trainingData.xs)
-    return null
-  }
-
-  get plottableData() {
+  get plottableTrainingData() {
     return plottableDataFn(this.trainingData.xs, this.trainingData.ys)
   }
 
-  get plottableDataAndPredictionBefore() {
+  get predictionsBeforeTrainingData() {
+    return predict(this.trainingData.xs, this.seedCoefficients)
+  }
+
+  get plottablePredictionsBeforeTraining() {
     return plottableDataAndPredictionsFn(
       this.trainingData.xs,
       this.trainingData.ys,
-      this.predictionsBefore
+      this.predictionsBeforeTrainingData
     )
   }
 
-  get plottableDataAndPredictionAfter() {
-    return plottableDataAndPredictionsFn(
-      this.trainingData.xs,
-      this.trainingData.ys,
-      this.predictionsAfter
-    )
-  }
+  // get predictionsAfterTraining() {
+  //   // predict(this.trainingData.xs)
+  //   return null
+  // }
+
+  // get plottableDataAndPredictionAfter() {
+  //   return plottableDataAndPredictionsFn(
+  //     this.trainingData.xs,
+  //     this.trainingData.ys,
+  //     this.predictionsAfterTraining
+  //   )
+  // }
 }
 
 decorate(CurveStore, {
-  trueCoefficients: observable,
+  trueCoefficientVals: observable,
   trainingData: computed,
-  predictionsBefore: computed,
-  predictionsAfter: computed,
-  plottableData: computed,
-  plottableDataAndPredictionBefore: computed,
-  plottableDataAndPredictionAfter: computed
+  plottableTrainingData: computed,
+  predictionsBeforeTrainingData: computed,
+  plottablePredictionsBeforeTraining: computed
+  // predictionsAfterTraining: computed,
+  // plottableDataAndPredictionBefore: computed,
+  // plottableDataAndPredictionAfter: computed
 })
 
 export default CurveStore

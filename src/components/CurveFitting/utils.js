@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs'
 
 // y = a * x ^ 3 + b * x ^ 2 + c * x + d
-export const predict = (x, a, b, c, d) => {
+export const predict = (x, { a, b, c, d }) => {
   return tf.tidy(() => {
     return a
       .mul(x.pow(tf.scalar(3, 'int32')))
@@ -22,15 +22,7 @@ export const loss = (prediction, labels) => {
 
 export const train = async (xs, ys, numIterations, optimizer) => {
   for (let iter = 0; iter < numIterations; iter++) {
-    // optimizer.minimize is where the training happens.
-    // The function it takes must return a numerical estimate (i.e. loss)
-    // of how well we are doing using the current state of
-    // the variables we created at the start.
-    // This optimizer does the 'backward' step of our training process
-    // updating variables defined previously in order to minimize the
-    // loss.
     optimizer.minimize(() => {
-      // Feed the examples into the model
       const pred = predict(xs)
       return loss(pred, ys)
     })
