@@ -107,13 +107,13 @@ class CurveStore {
     runInAction(() => {
       this.trainedCoefficients = trainedCoefficients
       this.isTraining = false
+      console.log('trainedCoefficients: ', trainedCoefficients)
     })
   }
 
-  // get predictionsAfterTraining() {
-  //   // predict(this.trainingData.xs)
-  //   return null
-  // }
+  get predictionsAfterTraining() {
+    return predict(this.trainingData.xs, this.trainedCoefficients)
+  }
 
   // get plottableDataAndPredictionAfter() {
   //   return plottableDataAndPredictionsFn(
@@ -125,6 +125,7 @@ class CurveStore {
 }
 
 decorate(CurveStore, {
+  isTraining: observable,
   trueCoefficientVals: observable,
   trainingData: computed,
   plottableTrainingData: computed,
