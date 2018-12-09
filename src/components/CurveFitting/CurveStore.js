@@ -11,8 +11,8 @@ import {
 } from 'mobx'
 import {
   predict,
-  plottableDataFn,
-  plottableDataAndPredictionsFn,
+  plottableTrainingDataFn,
+  plottablePredictionsFn,
   generateCurveData,
   trainFn
 } from './utils'
@@ -84,7 +84,7 @@ class CurveStore {
   }
 
   get plottableTrainingData() {
-    return plottableDataFn(this.trainingData)
+    return plottableTrainingDataFn(this.trainingData)
   }
 
   get predictionsBeforeTraining() {
@@ -92,7 +92,7 @@ class CurveStore {
   }
 
   get plottablePredictionsBeforeTraining() {
-    return plottableDataAndPredictionsFn(
+    return plottablePredictionsFn(
       this.trainingData,
       this.predictionsBeforeTraining
     )
@@ -127,7 +127,7 @@ class CurveStore {
     if (!this.predictionsAfterTraining) {
       return null
     } else {
-      return plottableDataAndPredictionsFn(
+      return plottablePredictionsFn(
         this.trainingData,
         this.predictionsAfterTraining
       )

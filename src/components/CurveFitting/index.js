@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+// import _ from 'lodash'
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
 import { Grid, Loader, Header } from 'semantic-ui-react'
@@ -23,23 +23,6 @@ class CurveFitting extends Component {
       trainedCoefficientVals,
       seedCoefficientVals
     } = this.props.curveStore
-
-    // Composite scatter charts need both an x and y, instead of a 'pred' key
-    const predictionsBeforeTraining = _.map(
-      plottablePredictionsBeforeTraining,
-      row => {
-        const picked = _.pick(row, ['x', 'pred'])
-        return _.mapKeys(picked, (val, key) => (key === 'pred' ? 'y' : key))
-      }
-    )
-
-    const predictionsAfterTraining = _.map(
-      plottablePredictionsAfterTraining,
-      row => {
-        const picked = _.pick(row, ['x', 'pred'])
-        return _.mapKeys(picked, (val, key) => (key === 'pred' ? 'y' : key))
-      }
-    )
 
     return (
       <div>
@@ -72,7 +55,7 @@ class CurveFitting extends Component {
               />
               <PredictionChart
                 plottableTrainingData={plottableTrainingData}
-                plottablePredictions={predictionsBeforeTraining}
+                plottablePredictions={plottablePredictionsBeforeTraining}
                 predictionLegend='Prediction Before Training'
                 isTraining={false}
               />
@@ -85,7 +68,7 @@ class CurveFitting extends Component {
               />
               <PredictionChart
                 plottableTrainingData={plottableTrainingData}
-                plottablePredictions={predictionsAfterTraining}
+                plottablePredictions={plottablePredictionsAfterTraining}
                 predictionLegend='Prediction After Training'
                 isTraining={isTraining}
               />

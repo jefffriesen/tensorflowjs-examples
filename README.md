@@ -3,11 +3,10 @@ https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-co
 
 
 TODO:
-1. Format predictionsBeforeTraining in mobx store (make names more consistent)
-2. Fix coefficient disoplay. Show spinner for coefficients that are training
+2. Fix coefficient display. Show spinner for coefficients that are training
 3. Make dots smaller
 4. Make predictions a line instead of dots
-5. Increase number of iterations
+5. Run multiple versions with different number of iterations. Or make it adjustable
 
 
 ## 2. Boston Housing Price Prediction
