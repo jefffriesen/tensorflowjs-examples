@@ -17,13 +17,22 @@ class CurveFitting extends Component {
     const {
       plottableTrainingData,
       plottablePredictionsBeforeTraining,
-      isTraining
+      plottablePredictionsAfterTraining,
+      isTraining,
+      trainedCoefficientVals
     } = this.props.curveStore
 
     // Composite scatter charts need both an x and y, instead of a 'pred' key
-    // TODO: Do I want to move this step to the store?
     const predictionsBeforeTraining = _.map(
       plottablePredictionsBeforeTraining,
+      row => {
+        const picked = _.pick(row, ['x', 'pred'])
+        return _.mapKeys(picked, (val, key) => (key === 'pred' ? 'y' : key))
+      }
+    )
+
+    const predictionsAfterTraining = _.map(
+      plottablePredictionsAfterTraining,
       row => {
         const picked = _.pick(row, ['x', 'pred'])
         return _.mapKeys(picked, (val, key) => (key === 'pred' ? 'y' : key))
@@ -85,12 +94,34 @@ class CurveFitting extends Component {
             </Grid.Column>
             <Grid.Column>
               <h5>Fit curve with learned coefficients (after training)</h5>
-              Learned coefficients:
+              Learned coefficients: a: {trainedCoefficientVals.a}, b:{' '}
+              {trainedCoefficientVals.b}, c: {trainedCoefficientVals.c}, d:{' '}
+              {trainedCoefficientVals.d}
               {isTraining ? (
                 <TrainingChart isTraining={isTraining} />
               ) : (
                 <span />
               )}
+              <ScatterChart
+                width={400}
+                height={400}
+                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <XAxis type='number' dataKey={'x'} />
+                <YAxis type='number' dataKey={'y'} />
+                <CartesianGrid />
+                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                <Legend />
+                <Scatter
+                  name='Training data'
+                  data={plottableTrainingData}
+                  fill='#83A1C3'
+                />
+                <Scatter
+                  name='Prediction After Training'
+                  data={predictionsAfterTraining}
+                  fill='#FF6346'
+                />
+              </ScatterChart>
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -108,7 +139,8 @@ const TrainingChart = ({ isTraining }) => {
         <Dimmer active inverted>
           <Loader>Training</Loader>
         </Dimmer>
-        <div style={{ height: 290 }} />
+        {/* <div style={{ height: 290 }} /> */}
+        <div style={{ height: 100 }} />
       </Segment>
     )
   } else {

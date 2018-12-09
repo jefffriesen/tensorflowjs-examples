@@ -48,6 +48,12 @@ class CurveStore {
     c: 0.3, // Math.random(),
     d: 0.4 // Math.random()
   }
+  // seedCoefficientVals = {
+  //   a: Math.random(),
+  //   b: Math.random(),
+  //   c: Math.random(),
+  //   d: Math.random()
+  // }
   trueCoefficientVals = { a: -0.8, b: -0.2, c: 0.9, d: 0.5 }
 
   // seedCoefficients and trainedCoefficients are tensor variables.
@@ -68,7 +74,7 @@ class CurveStore {
   numIterations = 75
   learningRate = 0.5
   optimizer = tf.train.sgd(this.learningRate)
-  isTraining = false
+  isTraining = true
 
   // May have to break this out into different functions:
   // 1. trainingDataCuve
@@ -78,18 +84,17 @@ class CurveStore {
   }
 
   get plottableTrainingData() {
-    return plottableDataFn(this.trainingData.xs, this.trainingData.ys)
+    return plottableDataFn(this.trainingData)
   }
 
-  get predictionsBeforeTrainingData() {
+  get predictionsBeforeTraining() {
     return predict(this.trainingData.xs, this.seedCoefficients)
   }
 
   get plottablePredictionsBeforeTraining() {
     return plottableDataAndPredictionsFn(
-      this.trainingData.xs,
-      this.trainingData.ys,
-      this.predictionsBeforeTrainingData
+      this.trainingData,
+      this.predictionsBeforeTraining
     )
   }
 
@@ -107,34 +112,49 @@ class CurveStore {
     runInAction(() => {
       this.trainedCoefficients = trainedCoefficients
       this.isTraining = false
-      console.log('trainedCoefficients: ', trainedCoefficients)
     })
   }
 
   get predictionsAfterTraining() {
-    return predict(this.trainingData.xs, this.trainedCoefficients)
+    if (this.isTraining) {
+      return null
+    } else {
+      return predict(this.trainingData.xs, this.trainedCoefficients)
+    }
   }
 
-  // get plottableDataAndPredictionAfter() {
-  //   return plottableDataAndPredictionsFn(
-  //     this.trainingData.xs,
-  //     this.trainingData.ys,
-  //     this.predictionsAfterTraining
-  //   )
-  // }
+  get plottablePredictionsAfterTraining() {
+    if (!this.predictionsAfterTraining) {
+      return null
+    } else {
+      return plottableDataAndPredictionsFn(
+        this.trainingData,
+        this.predictionsAfterTraining
+      )
+    }
+  }
+
+  get trainedCoefficientVals() {
+    return {
+      a: _.round(this.trainedCoefficients.a.dataSync()[0], 2),
+      b: _.round(this.trainedCoefficients.b.dataSync()[0], 2),
+      c: _.round(this.trainedCoefficients.c.dataSync()[0], 2),
+      d: _.round(this.trainedCoefficients.d.dataSync()[0], 2)
+    }
+  }
 }
 
 decorate(CurveStore, {
   isTraining: observable,
   trueCoefficientVals: observable,
+  trainedCoefficientVals: computed,
   trainingData: computed,
   plottableTrainingData: computed,
-  predictionsBeforeTrainingData: computed,
+  predictionsBeforeTraining: computed,
   plottablePredictionsBeforeTraining: computed,
-  train: action
-  // predictionsAfterTraining: computed,
-  // plottableDataAndPredictionBefore: computed,
-  // plottableDataAndPredictionAfter: computed
+  train: action,
+  predictionsAfterTraining: computed,
+  plottablePredictionsAfterTraining: computed
 })
 
 export default CurveStore

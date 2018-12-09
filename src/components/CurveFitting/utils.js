@@ -39,7 +39,8 @@ export const trainFn = async (
   return coeff
 }
 
-export const plottableDataFn = (xs, ys) => {
+export const plottableDataFn = trainingData => {
+  const { xs, ys } = trainingData
   const xvals = xs.dataSync()
   const yvals = ys.dataSync()
   return Array.from(yvals).map((y, i) => {
@@ -47,7 +48,8 @@ export const plottableDataFn = (xs, ys) => {
   })
 }
 
-export const plottableDataAndPredictionsFn = (xs, ys, preds) => {
+export const plottableDataAndPredictionsFn = (trainingData, preds) => {
+  const { xs, ys } = trainingData
   const xvals = xs.dataSync()
   const yvals = ys.dataSync()
   const predVals = preds.dataSync()
