@@ -38,22 +38,17 @@ configure({ enforceActions: 'observed' })
 
 class CurveStore {
   constructor() {
-    autorun(() => this.train(this.trainedCoefficients))
+    // You could pass in all of the parameters to train and it will rerun any of
+    // them change
+    autorun(() => this.train())
   }
 
-  // '...Vals' are plain numbers instead of tensors
   seedCoefficientVals = {
-    a: 0.1, // Math.random(),
-    b: 0.2, // Math.random(),
-    c: 0.3, // Math.random(),
-    d: 0.4 // Math.random()
+    a: 0.1,
+    b: 0.2,
+    c: 0.3,
+    d: 0.4
   }
-  // seedCoefficientVals = {
-  //   a: Math.random(),
-  //   b: Math.random(),
-  //   c: Math.random(),
-  //   d: Math.random()
-  // }
   trueCoefficientVals = { a: -0.8, b: -0.2, c: 0.9, d: 0.5 }
 
   // seedCoefficients and trainedCoefficients are tensor variables.
@@ -63,22 +58,18 @@ class CurveStore {
     c: tf.variable(tf.scalar(this.seedCoefficientVals.c)),
     d: tf.variable(tf.scalar(this.seedCoefficientVals.d))
   }
-  // These will be mutated during training.
-  // This can probably be cloned from seedCoefficients
-  trainedCoefficients = {
-    a: tf.variable(tf.scalar(this.seedCoefficientVals.a)),
-    b: tf.variable(tf.scalar(this.seedCoefficientVals.b)),
-    c: tf.variable(tf.scalar(this.seedCoefficientVals.c)),
-    d: tf.variable(tf.scalar(this.seedCoefficientVals.d))
-  }
-  numIterations = 75
+
+  // Make a copy of seedCoefficients otherwise they will be mutated during training
+  // That's not nice in general, but it's especially bad since it's an observable
+  // and any observers will updated as it mutates (depending on throttling)
+  trainedCoefficients = {}
+
+  // Model parameters. Could be made adjustable
+  numIterations = 25 // 100-200 is best fit
   learningRate = 0.5
   optimizer = tf.train.sgd(this.learningRate)
   isTraining = true
 
-  // May have to break this out into different functions:
-  // 1. trainingDataCuve
-  // 2. predictedDataCurve
   get trainingData() {
     return generateCurveData(100, this.trueCoefficientVals)
   }
@@ -98,14 +89,20 @@ class CurveStore {
     )
   }
 
-  async train(coeff) {
+  async train() {
     this.isTraining = true
-    if (_.isEmpty(this.trainedCoefficients)) {
-      return null
+
+    // Create a copy of the seed coefficients, otherwise tensorflow will mutate
+    // them inside the minimize() function
+    let trainingCoefficents = {
+      a: tf.variable(tf.scalar(this.seedCoefficientVals.a)),
+      b: tf.variable(tf.scalar(this.seedCoefficientVals.b)),
+      c: tf.variable(tf.scalar(this.seedCoefficientVals.c)),
+      d: tf.variable(tf.scalar(this.seedCoefficientVals.d))
     }
     const trainedCoefficients = await trainFn(
       this.trainingData,
-      this.trainedCoefficients,
+      trainingCoefficents,
       this.numIterations,
       this.optimizer
     )
@@ -135,11 +132,15 @@ class CurveStore {
   }
 
   get trainedCoefficientVals() {
-    return {
-      a: _.round(this.trainedCoefficients.a.dataSync()[0], 2),
-      b: _.round(this.trainedCoefficients.b.dataSync()[0], 2),
-      c: _.round(this.trainedCoefficients.c.dataSync()[0], 2),
-      d: _.round(this.trainedCoefficients.d.dataSync()[0], 2)
+    if (_.isEmpty(this.trainedCoefficients)) {
+      return null
+    } else {
+      return {
+        a: _.round(this.trainedCoefficients.a.dataSync()[0], 2),
+        b: _.round(this.trainedCoefficients.b.dataSync()[0], 2),
+        c: _.round(this.trainedCoefficients.c.dataSync()[0], 2),
+        d: _.round(this.trainedCoefficients.d.dataSync()[0], 2)
+      }
     }
   }
 }

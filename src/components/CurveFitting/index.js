@@ -1,4 +1,4 @@
-// import _ from 'lodash'
+import _ from 'lodash'
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
 import { Grid, Loader, Header } from 'semantic-ui-react'
@@ -21,7 +21,8 @@ class CurveFitting extends Component {
       plottablePredictionsAfterTraining,
       isTraining,
       trainedCoefficientVals,
-      seedCoefficientVals
+      seedCoefficientVals,
+      trueCoefficientVals
     } = this.props.curveStore
 
     return (
@@ -39,8 +40,8 @@ class CurveFitting extends Component {
             <Grid.Column>
               <ChartTitle
                 title='Original Data (Synthetic)'
-                coeffTitle='True coefficients:'
-                coeff={seedCoefficientVals}
+                coeffTitle='True coefficients'
+                coeff={trueCoefficientVals}
               />
               <PredictionChart
                 plottableTrainingData={plottableTrainingData}
@@ -50,8 +51,8 @@ class CurveFitting extends Component {
             <Grid.Column>
               <ChartTitle
                 title='Fit curve with random coefficients (before training)'
-                coeffTitle='Random coefficients:'
-                coeff={trainedCoefficientVals}
+                coeffTitle='Seed coefficients'
+                coeff={seedCoefficientVals}
               />
               <PredictionChart
                 plottableTrainingData={plottableTrainingData}
@@ -86,10 +87,23 @@ const ChartTitle = ({ title, coeffTitle, coeff }) => {
   return (
     <div>
       <Header as='h3'>{title}</Header>
-      <p>
-        {coeffTitle}: a: {coeff.a}, b: {coeff.b}, c: {coeff.c}, d: {coeff.d}
-      </p>
+      <div>
+        {coeffTitle}:{' '}
+        {_.isEmpty(coeff) ? (
+          <Loader active inline size='mini' />
+        ) : (
+          <CoefficientTable coeff={coeff} />
+        )}
+      </div>
     </div>
+  )
+}
+
+const CoefficientTable = ({ coeff }) => {
+  return (
+    <span>
+      a: {coeff.a}, b: {coeff.b}, c: {coeff.c}, d: {coeff.d}
+    </span>
   )
 }
 

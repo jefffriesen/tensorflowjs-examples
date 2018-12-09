@@ -22,21 +22,21 @@ export const loss = (prediction, labels) => {
 
 export const trainFn = async (
   trainingData,
-  coeff,
+  trainingCoefficients,
   numIterations,
   optimizer
 ) => {
   const { xs, ys } = trainingData
   for (let iter = 0; iter < numIterations; iter++) {
     optimizer.minimize(() => {
-      const pred = predict(xs, coeff)
+      const pred = predict(xs, trainingCoefficients)
       return loss(pred, ys)
     })
 
     // Use tf.nextFrame to not block the browser.
     await tf.nextFrame()
   }
-  return coeff
+  return trainingCoefficients
 }
 
 export const plottableTrainingDataFn = trainingData => {
