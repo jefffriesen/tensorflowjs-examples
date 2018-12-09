@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
-import { Grid, Dimmer, Loader, Segment } from 'semantic-ui-react'
+import { Grid, Loader, Header } from 'semantic-ui-react'
 import {
   ScatterChart,
   Scatter,
@@ -9,7 +9,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  ResponsiveContainer
 } from 'recharts'
 
 class CurveFitting extends Component {
@@ -19,7 +20,8 @@ class CurveFitting extends Component {
       plottablePredictionsBeforeTraining,
       plottablePredictionsAfterTraining,
       isTraining,
-      trainedCoefficientVals
+      trainedCoefficientVals,
+      seedCoefficientVals
     } = this.props.curveStore
 
     // Composite scatter charts need both an x and y, instead of a 'pred' key
@@ -52,76 +54,41 @@ class CurveFitting extends Component {
           </Grid.Row>
           <Grid.Row>
             <Grid.Column>
-              <h5>Original Data (Synthetic)</h5>
-              True coefficients:
-              {/* TODO */}
-              {/* a=-0.800, b=-0.200, c=0.900, d=0.500 */}
-              <ScatterChart
-                width={400}
-                height={400}
-                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                <CartesianGrid />
-                <XAxis dataKey={'x'} type='number' />
-                <YAxis dataKey={'y'} type='number' />
-                <Scatter data={plottableTrainingData} fill='#83A1C3' />
-                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                <Legend />
-              </ScatterChart>
+              <ChartTitle
+                title='Original Data (Synthetic)'
+                coeffTitle='True coefficients:'
+                coeff={seedCoefficientVals}
+              />
+              <PredictionChart
+                plottableTrainingData={plottableTrainingData}
+                isTraining={false}
+              />
             </Grid.Column>
             <Grid.Column>
-              <h5>Fit curve with random coefficients (before training)</h5>
-              Random coefficients:
-              <ScatterChart
-                width={400}
-                height={400}
-                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                <XAxis type='number' dataKey={'x'} />
-                <YAxis type='number' dataKey={'y'} />
-                <CartesianGrid />
-                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                <Legend />
-                <Scatter
-                  name='Training data'
-                  data={plottableTrainingData}
-                  fill='#83A1C3'
-                />
-                <Scatter
-                  name='Prediction Before Training'
-                  data={predictionsBeforeTraining}
-                  fill='#FF6346'
-                />
-              </ScatterChart>
+              <ChartTitle
+                title='Fit curve with random coefficients (before training)'
+                coeffTitle='Random coefficients:'
+                coeff={trainedCoefficientVals}
+              />
+              <PredictionChart
+                plottableTrainingData={plottableTrainingData}
+                plottablePredictions={predictionsBeforeTraining}
+                predictionLegend='Prediction Before Training'
+                isTraining={false}
+              />
             </Grid.Column>
             <Grid.Column>
-              <h5>Fit curve with learned coefficients (after training)</h5>
-              Learned coefficients: a: {trainedCoefficientVals.a}, b:{' '}
-              {trainedCoefficientVals.b}, c: {trainedCoefficientVals.c}, d:{' '}
-              {trainedCoefficientVals.d}
-              {isTraining ? (
-                <TrainingChart isTraining={isTraining} />
-              ) : (
-                <span />
-              )}
-              <ScatterChart
-                width={400}
-                height={400}
-                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                <XAxis type='number' dataKey={'x'} />
-                <YAxis type='number' dataKey={'y'} />
-                <CartesianGrid />
-                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                <Legend />
-                <Scatter
-                  name='Training data'
-                  data={plottableTrainingData}
-                  fill='#83A1C3'
-                />
-                <Scatter
-                  name='Prediction After Training'
-                  data={predictionsAfterTraining}
-                  fill='#FF6346'
-                />
-              </ScatterChart>
+              <ChartTitle
+                title='Fit curve with learned coefficients (after training)'
+                coeffTitle='Learned coefficients'
+                coeff={trainedCoefficientVals}
+              />
+              <PredictionChart
+                plottableTrainingData={plottableTrainingData}
+                plottablePredictions={predictionsAfterTraining}
+                predictionLegend='Prediction After Training'
+                isTraining={isTraining}
+              />
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -132,18 +99,51 @@ class CurveFitting extends Component {
 
 export default inject('curveStore')(observer(CurveFitting))
 
-const TrainingChart = ({ isTraining }) => {
-  if (isTraining) {
-    return (
-      <Segment>
-        <Dimmer active inverted>
-          <Loader>Training</Loader>
-        </Dimmer>
-        {/* <div style={{ height: 290 }} /> */}
-        <div style={{ height: 100 }} />
-      </Segment>
-    )
-  } else {
-    return null
-  }
+const ChartTitle = ({ title, coeffTitle, coeff }) => {
+  return (
+    <div>
+      <Header as='h3'>{title}</Header>
+      <p>
+        {coeffTitle}: a: {coeff.a}, b: {coeff.b}, c: {coeff.c}, d: {coeff.d}
+      </p>
+    </div>
+  )
+}
+
+const PredictionChart = ({
+  plottableTrainingData,
+  plottablePredictions,
+  predictionLegend,
+  isTraining
+}) => {
+  return (
+    <div>
+      <Loader
+        active={isTraining}
+        inline='centered'
+        style={{ position: 'absolute', top: '40%', left: '50%' }}
+      />
+      <ResponsiveContainer height={400}>
+        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <XAxis type='number' dataKey={'x'} />
+          <YAxis type='number' dataKey={'y'} />
+          <CartesianGrid />
+          <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+          <Legend />
+          <Scatter
+            name='Training data'
+            data={plottableTrainingData}
+            fill='#83A1C3'
+          />
+          {plottablePredictions && (
+            <Scatter
+              name={predictionLegend}
+              data={plottablePredictions}
+              fill='#FF6346'
+            />
+          )}
+        </ScatterChart>
+      </ResponsiveContainer>
+    </div>
+  )
 }
