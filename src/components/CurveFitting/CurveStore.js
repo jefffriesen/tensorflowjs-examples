@@ -40,7 +40,14 @@ class CurveStore {
   constructor() {
     // You could pass in all of the parameters to train and it will rerun any of
     // them change
-    autorun(() => this.train())
+    autorun(() =>
+      this.train(
+        this.seedCoefficientVals,
+        this.trainingData,
+        this.numIterations,
+        this.optimizer
+      )
+    )
   }
 
   seedCoefficientVals = {
@@ -89,22 +96,21 @@ class CurveStore {
     )
   }
 
-  async train() {
+  // Create a copy of the seed coefficients, otherwise tensorflow will mutate
+  // them inside the minimize() function
+  async train(seedCoefficientVals, trainingData, numIterations, optimizer) {
     this.isTraining = true
-
-    // Create a copy of the seed coefficients, otherwise tensorflow will mutate
-    // them inside the minimize() function
     let trainingCoefficents = {
-      a: tf.variable(tf.scalar(this.seedCoefficientVals.a)),
-      b: tf.variable(tf.scalar(this.seedCoefficientVals.b)),
-      c: tf.variable(tf.scalar(this.seedCoefficientVals.c)),
-      d: tf.variable(tf.scalar(this.seedCoefficientVals.d))
+      a: tf.variable(tf.scalar(seedCoefficientVals.a)),
+      b: tf.variable(tf.scalar(seedCoefficientVals.b)),
+      c: tf.variable(tf.scalar(seedCoefficientVals.c)),
+      d: tf.variable(tf.scalar(seedCoefficientVals.d))
     }
     const trainedCoefficients = await trainFn(
-      this.trainingData,
+      trainingData,
       trainingCoefficents,
-      this.numIterations,
-      this.optimizer
+      numIterations,
+      optimizer
     )
     runInAction(() => {
       this.trainedCoefficients = trainedCoefficients
