@@ -4,7 +4,6 @@ https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-co
 
 TODO:
 * Fix coefficient display. Show spinner for coefficients that are training
-* Pass in all parameters to train() so it reruns any of them change
 * Make dots smaller
 * Make predictions a line instead of dots
 * Run multiple versions with different number of iterations. Or make it adjustable

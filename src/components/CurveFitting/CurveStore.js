@@ -138,7 +138,7 @@ class CurveStore {
   }
 
   get trainedCoefficientVals() {
-    if (_.isEmpty(this.trainedCoefficients)) {
+    if (this.isTraining) {
       return null
     } else {
       return {
