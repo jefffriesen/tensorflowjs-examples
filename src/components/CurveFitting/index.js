@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
-import { Grid, Loader, Header } from 'semantic-ui-react'
+import { Grid, Loader, Header, Table } from 'semantic-ui-react'
 import {
   ScatterChart,
   Scatter,
@@ -31,9 +31,25 @@ class CurveFitting extends Component {
           <Grid.Row>
             <Grid.Column>
               <h3>TensorFlow.js: Fitting a curve to synthetic data</h3>
-              <a href='https://storage.googleapis.com/tfjs-examples/polynomial-regression-core/dist/index.html'>
-                Demo
-              </a>
+              <p>
+                Given some data generated using a polynomial function with some
+                noise added, we'll train a model to discover the coefficients
+                used to generate the data.{' '}
+                <a href='https://storage.googleapis.com/tfjs-examples/polynomial-regression-core/dist/index.html'>
+                  Demo
+                </a>
+                {', '}
+                <a href='https://js.tensorflow.org/tutorials/fit-curve.html'>
+                  Tutorial
+                </a>
+                {', '}
+                <a href='https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core'>
+                  Repo
+                </a>
+              </p>
+              <h4>
+                Polynomial: ax<sup>3</sup> + bx<sup>2</sup> + cx + d
+              </h4>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
@@ -87,23 +103,45 @@ const ChartTitle = ({ title, coeffTitle, coeff }) => {
   return (
     <div>
       <Header as='h3'>{title}</Header>
-      <div>
-        {coeffTitle}:{' '}
-        {_.isEmpty(coeff) ? (
-          <Loader active inline size='mini' />
-        ) : (
-          <CoefficientTable coeff={coeff} />
-        )}
-      </div>
+      <Grid>
+        <Grid.Row>
+          <Grid.Column width={4}>{coeffTitle}: </Grid.Column>
+          <Grid.Column width={10}>
+            {_.isEmpty(coeff) ? (
+              <Loader active inline size='mini' style={{ height: 73 }} />
+            ) : (
+              <CoefficientTable coeff={coeff} />
+            )}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </div>
   )
 }
 
 const CoefficientTable = ({ coeff }) => {
+  const { a, b, c, d } = coeff
   return (
-    <span>
-      a: {coeff.a}, b: {coeff.b}, c: {coeff.c}, d: {coeff.d}
-    </span>
+    <Table compact='very' celled size='small' basic='very'>
+      <Table.Body>
+        <Table.Row>
+          <Table.HeaderCell>a</Table.HeaderCell>
+          <Table.HeaderCell>b</Table.HeaderCell>
+          <Table.HeaderCell>c</Table.HeaderCell>
+          <Table.HeaderCell>d</Table.HeaderCell>
+          <Table.HeaderCell>polynomial</Table.HeaderCell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>{a}</Table.Cell>
+          <Table.Cell>{b}</Table.Cell>
+          <Table.Cell>{c}</Table.Cell>
+          <Table.Cell>{d}</Table.Cell>
+          <Table.Cell>
+            {a}x<sup>3</sup> + {b}x<sup>2</sup> + {c}x + {d}
+          </Table.Cell>
+        </Table.Row>
+      </Table.Body>
+    </Table>
   )
 }
 
