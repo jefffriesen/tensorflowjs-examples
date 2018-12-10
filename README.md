@@ -3,18 +3,24 @@ https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-co
 
 
 TODO:
-* Fix coefficient display. Show spinner for coefficients that are training
+* Show number of iterations and learning rate
 * Make dots smaller
 * Make predictions a line instead of dots
 * Run multiple versions with different number of iterations. Or make it adjustable
 * Put tensorflow comments back into the utils file
-* Put coefficients into a table, include equation being used with coefficients
+* Delete old utils file
 
 
 ## 2. Boston Housing Price Prediction
 https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing
 
-## HOMER Battery State of Charge Curve Fitting
+TODO:
+* Get CSVs loaded locally
+* Break out store and utils
+* Read tutorial
+
+
+## 3. HOMER Battery State of Charge Curve Fitting
 
 
 

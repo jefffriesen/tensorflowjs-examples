@@ -16,7 +16,7 @@ let curveStore = new CurveStore()
 let bostonStore = new BostonStore()
 let homerStore = new HomerStore()
 
-// This is to be able to inspect the store from the inspector at any time.
+// This is to be able to inspect the store from the inspector at any time for debugging
 window.curveStore = curveStore
 window.bostonStore = bostonStore
 window.homerStore = homerStore

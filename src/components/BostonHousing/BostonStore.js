@@ -8,8 +8,16 @@ import {
   // computed,
   autorun
 } from 'mobx'
-import { loadCsv } from '../BostonHousing/bostonHelpers'
+import { loadCsv } from './utils'
 configure({ enforceActions: 'observed' })
+
+const basePath = './data/boston_housing/'
+const csvOptions = {
+  header: true,
+  dynamicTyping: true,
+  skipEmptyLines: true,
+  delimiter: ','
+}
 
 /**
  * Boston Housing
@@ -33,10 +41,10 @@ class BostonStore {
       testFeatures,
       testTarget
     ] = await Promise.all([
-      loadCsv('train-data.csv'),
-      loadCsv('train-target.csv'),
-      loadCsv('test-data.csv'),
-      loadCsv('test-target.csv')
+      loadCsv('train-data.csv', basePath, csvOptions),
+      loadCsv('train-target.csv', basePath, csvOptions),
+      loadCsv('test-data.csv', basePath, csvOptions),
+      loadCsv('test-target.csv', basePath, csvOptions)
     ])
     runInAction(() => {
       this.bostonFiles = {
