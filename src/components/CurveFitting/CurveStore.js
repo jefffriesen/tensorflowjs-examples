@@ -38,8 +38,7 @@ configure({ enforceActions: 'observed' })
 
 class CurveStore {
   constructor() {
-    // You could pass in all of the parameters to train and it will rerun any of
-    // them change
+    // autorun will rerun if any of the arguments change
     autorun(() =>
       this.train(
         this.seedCoefficientVals,
@@ -51,10 +50,10 @@ class CurveStore {
   }
 
   seedCoefficientVals = {
-    a: 0.1,
-    b: 0.2,
-    c: 0.3,
-    d: 0.4
+    a: _.round(Math.random(), 2), // 0.1,
+    b: _.round(Math.random(), 2), // 0.2,
+    c: _.round(Math.random(), 2), // 0.3,
+    d: _.round(Math.random(), 2) // 0.4
   }
   trueCoefficientVals = { a: -0.8, b: -0.2, c: 0.9, d: 0.5 }
 
@@ -72,7 +71,7 @@ class CurveStore {
   trainedCoefficients = {}
 
   // Model parameters. Could be made adjustable
-  numIterations = 25 // 100-200 is best fit
+  numIterations = 125 // 100-200 is best fit
   learningRate = 0.5
   optimizer = tf.train.sgd(this.learningRate)
   isTraining = true
