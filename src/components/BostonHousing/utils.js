@@ -47,7 +47,7 @@ export function arraysToTensors(
  * @returns {List} List of objects, each with a string feature name, and value
  *     feature weight.
  */
-export function describeKerenelElements(kernel, featureDescriptions) {
+export function describeKernelElements(kernel, featureDescriptions) {
   const kernelSize = featureDescriptions.length
   tf.util.assert(
     kernel.length === kernelSize,

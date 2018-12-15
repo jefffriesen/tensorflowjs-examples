@@ -17,6 +17,7 @@ class BostonHousing extends Component {
   }
 
   render() {
+    const { currentEpochValue, NUM_EPOCHS, isTraining } = this.props.bostonStore
     return (
       <div>
         <Grid columns='equal' padded>
@@ -35,6 +36,10 @@ class BostonHousing extends Component {
                 Train Linear Regressor
               </Button>
               <h4>Training Progress</h4>
+              {isTraining.linear && <p>Starting training process...</p>}
+              <p>
+                Epoch {currentEpochValue.linear + 1} of {NUM_EPOCHS} completed
+              </p>
               <h4>Weights by magnitude</h4>
             </Grid.Column>
             <Grid.Column>

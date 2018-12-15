@@ -13,7 +13,7 @@ import {
   arraysToTensors,
   shuffle,
   linearRegressionModel,
-  describeKerenelElements
+  describeKernelElements
 } from './utils'
 configure({ enforceActions: 'observed' })
 
@@ -61,6 +61,18 @@ class BostonStore {
   tensors = {}
   numFeatures = null
   bostonDataIsLoading = true
+  isTraining = {
+    linear: false
+  }
+  currentEpochValue = {
+    linear: 0
+  }
+  trainLogs = {
+    linear: []
+  }
+  weightsList = {
+    linear: []
+  }
 
   async trainLinearRegressor() {
     const model = linearRegressionModel(this.numFeatures)
@@ -80,6 +92,9 @@ class BostonStore {
   // store I could just reference all of the store values like BATCH_SIZE intead
   // of passing them in. I prefer to explicitly pass them in though since it
   // makes a clearer and more testable function. But this function has side effects
+
+  // I could put this in utils and then just pass in this.currentEpochValue and trainLogs
+  // TODO: Move compile step into trainLinearRegressor?
   async run({
     model,
     tensors,
@@ -89,47 +104,39 @@ class BostonStore {
     BATCH_SIZE,
     NUM_EPOCHS
   }) {
-    // TODO: Move compile step into trainLinearRegressor?
     model.compile({
       optimizer: tf.train.sgd(LEARNING_RATE),
       loss: 'meanSquaredError'
     })
-
-    // Maybe trainLogs is an observable (break it out into each training type)
-    console.log('Starting training process...')
-    let trainLogs = []
-
+    this.isTraining[modelName] = true
     await model.fit(tensors.trainFeatures, tensors.trainTarget, {
       batchSize: BATCH_SIZE,
       epochs: NUM_EPOCHS,
       validationSplit: 0.2,
       callbacks: {
         onEpochEnd: async (epoch, logs) => {
-          console.log(
-            `Epoch ${epoch + 1} of ${NUM_EPOCHS} completed.`,
-            modelName
-          )
-          // await ui.updateModelStatus(
-          //   `Epoch ${epoch + 1} of ${NUM_EPOCHS} completed.`,
-          //   modelName
-          // )
-
-          trainLogs.push(logs)
-          // tfvis.show.history(container, trainLogs, ['loss', 'val_loss'])
+          runInAction(() => {
+            this.currentEpochValue[modelName] = epoch
+            this.trainLogs[modelName].push(logs)
+            // tfvis.show.history(container, trainLogs, ['loss', 'val_loss'])
+          })
 
           if (weightsIllustration) {
             model.layers[0]
               .getWeights()[0]
               .data()
               .then(kernelAsArr => {
-                const weightsList = describeKerenelElements(
-                  kernelAsArr,
-                  featureDescriptions
-                )
-                console.log('weightsList: ', weightsList)
-                // ui.updateWeightDescription(weightsList)
+                runInAction(() => {
+                  this.weightsList[modelName] = describeKernelElements(
+                    kernelAsArr,
+                    featureDescriptions
+                  )
+                })
               })
           }
+        },
+        onTrainEnd: (a, b) => {
+          console.log('onTrainEnd: ', a, b)
         }
       }
     })
@@ -176,10 +183,14 @@ class BostonStore {
 }
 
 decorate(BostonStore, {
+  run: action,
   fetchBostonFiles: action,
   tensors: observable,
   numFeatures: observable,
-  bostonDataIsLoading: observable
+  bostonDataIsLoading: observable,
+  currentEpochValue: observable,
+  trainLogs: observable,
+  weightsList: observable
 })
 
 export default BostonStore
