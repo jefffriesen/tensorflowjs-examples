@@ -3,16 +3,44 @@ import _ from 'lodash'
 import Papa from 'papaparse'
 import * as tf from '@tensorflow/tfjs'
 
+export const featureDescriptions = [
+  'Crime rate',
+  'Land zone size',
+  'Industrial proportion',
+  'Next to river',
+  'Nitric oxide concentration',
+  'Number of rooms per house',
+  'Age of housing',
+  'Distance to commute',
+  'Distance to highway',
+  'Tax rate',
+  'School class size',
+  'School drop-out rate'
+]
+
+/**
+ * Builds and returns Linear Regression Model.
+ *
+ * @returns {tf.Sequential} The linear regression model.
+ */
+// export function linearRegressionModel() {
+//   const model = tf.sequential()
+//   model.add(tf.layers.dense({ inputShape: [bostonData.numFeatures], units: 1 }))
+
+//   model.summary()
+//   return model
+// }
+
 /**
  * Convert loaded data into tensors and creates normalized versions of the features.
  * @param {*} data
  */
-export const arraysToTensors = (
+export function arraysToTensors(
   trainFeaturesArray,
   trainTargetArray,
   testFeaturesArray,
   testTargetArray
-) => {
+) {
   let rawTrainFeatures = tf.tensor2d(trainFeaturesArray)
   let trainTarget = tf.tensor2d(trainTargetArray)
   let rawTestFeatures = tf.tensor2d(testFeaturesArray)
@@ -63,17 +91,45 @@ export function normalizeTensor(data, dataMean, dataStd) {
 }
 
 /**
+ * Shuffles data and target (maintaining alignment) using Fisher-Yates
+ * algorithm
+ * The original function mutate the data in place.
+ * I've converted it to return a value. Needs a test
+ * Pass in array of arrays
+ */
+export function shuffle(dataOrig, targetOrig) {
+  let data = _.cloneDeep(dataOrig)
+  let target = _.cloneDeep(targetOrig)
+  let counter = data.length
+  let temp = 0
+  let index = 0
+  while (counter > 0) {
+    index = (Math.random() * counter) | 0
+    counter--
+    // data:
+    temp = data[counter]
+    data[counter] = data[index]
+    data[index] = temp
+    // target:
+    temp = target[counter]
+    target[counter] = target[index]
+    target[index] = temp
+  }
+  return [data, target]
+}
+
+/**
  * Load data from local source. This is different than the official example that
  * loads from a remote source. This is nicer and faster.
  * @param {*} data
  */
-const parseCsv = data => {
+function parseCsv(data) {
   return data.map(row => {
     return Object.keys(row).map(key => parseFloat(row[key]))
   })
 }
 
-export const loadCsv = async (filename, basePath, csvOptions) => {
+export async function loadCsv(filename, basePath, csvOptions) {
   const path = `${basePath}${filename}`
   try {
     const res = await window.fetch(path)

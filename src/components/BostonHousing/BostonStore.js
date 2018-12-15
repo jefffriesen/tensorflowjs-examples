@@ -1,4 +1,4 @@
-// import _ from 'lodash'
+import _ from 'lodash'
 // import * as tf from '@tensorflow/tfjs'
 import {
   configure,
@@ -9,7 +9,7 @@ import {
   // computed,
   autorun
 } from 'mobx'
-import { loadCsv, arraysToTensors } from './utils'
+import { loadCsv, arraysToTensors, shuffle } from './utils'
 configure({ enforceActions: 'observed' })
 
 const basePath = './data/boston_housing/'
@@ -39,6 +39,7 @@ class BostonStore {
   BATCH_SIZE = 40
   LEARNING_RATE = 0.01
   tensors = {}
+  numFeatures = null
   bostonDataIsLoading = true
 
   async fetchBostonFiles(fileInfos) {
@@ -54,13 +55,27 @@ class BostonStore {
       loadCsv('test-data.csv', basePath, csvOptions),
       loadCsv('test-target.csv', basePath, csvOptions)
     ])
-    const tensors = arraysToTensors(
+    const numFeatures = _.size(_.first(trainFeatures))
+
+    // Shuffle in a more functional way
+    const [shuffledTrainFeatures, shuffledTrainTarget] = shuffle(
       trainFeatures,
-      trainTarget,
+      trainTarget
+    )
+    const [shuffledTestFeatures, shuffledTestTarget] = shuffle(
       testFeatures,
       testTarget
     )
+
+    // Convert to normalized tensors
+    const tensors = arraysToTensors(
+      shuffledTrainFeatures,
+      shuffledTrainTarget,
+      shuffledTestFeatures,
+      shuffledTestTarget
+    )
     runInAction(() => {
+      this.numFeatures = numFeatures
       this.tensors = tensors
       this.bostonDataIsLoading = false
     })
@@ -69,8 +84,9 @@ class BostonStore {
 
 decorate(BostonStore, {
   fetchBostonFiles: action,
-  // bostonFilesInfo: observable,
-  tensors: observable
+  tensors: observable,
+  numFeatures: observable,
+  bostonDataIsLoading: observable
 })
 
 export default BostonStore

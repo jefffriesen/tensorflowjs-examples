@@ -15,9 +15,8 @@ TODO:
 https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing
 
 TODO:
-* Get CSVs loaded locally
-* Break out store and utils
-* Read tutorial
+* Shuffle data when loading (make it a functional function)
+
 
 
 ## 3. HOMER Battery State of Charge Curve Fitting
