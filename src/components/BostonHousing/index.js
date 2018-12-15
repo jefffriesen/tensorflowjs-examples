@@ -5,6 +5,7 @@ import { Grid, Button } from 'semantic-ui-react'
 class BostonHousing extends Component {
   trainLinearRegressor = () => {
     console.log('training linear regressor')
+    this.props.bostonStore.trainLinearRegressor()
   }
 
   trainLinearNN1 = () => {

@@ -23,13 +23,12 @@ export const featureDescriptions = [
  *
  * @returns {tf.Sequential} The linear regression model.
  */
-// export function linearRegressionModel() {
-//   const model = tf.sequential()
-//   model.add(tf.layers.dense({ inputShape: [bostonData.numFeatures], units: 1 }))
-
-//   model.summary()
-//   return model
-// }
+export function linearRegressionModel(numFeatures) {
+  const model = tf.sequential()
+  model.add(tf.layers.dense({ inputShape: [numFeatures], units: 1 }))
+  model.summary()
+  return model
+}
 
 /**
  * Convert loaded data into tensors and creates normalized versions of the features.
@@ -55,6 +54,26 @@ export function arraysToTensors(
     testFeatures: normalizeTensor(rawTestFeatures, dataMean, dataStd),
     testTarget
   }
+}
+
+/**
+ * Describe the current linear weights for a human to read.
+ *
+ * @param {Array} kernel Array of floats of length 12.  One value per feature.
+ * @returns {List} List of objects, each with a string feature name, and value
+ *     feature weight.
+ */
+export function describeKerenelElements(kernel) {
+  tf.util.assert(
+    kernel.length == 12,
+    `kernel must be a array of length 12, got ${kernel.length}`
+  )
+  // TODO: functionalize this
+  const outList = []
+  for (let idx = 0; idx < kernel.length; idx++) {
+    outList.push({ description: featureDescriptions[idx], value: kernel[idx] })
+  }
+  return outList
 }
 
 /**
