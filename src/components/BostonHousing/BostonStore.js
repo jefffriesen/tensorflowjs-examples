@@ -25,6 +25,21 @@ const csvOptions = {
   delimiter: ','
 }
 
+const featureDescriptions = [
+  'Crime rate',
+  'Land zone size',
+  'Industrial proportion',
+  'Next to river',
+  'Nitric oxide concentration',
+  'Number of rooms per house',
+  'Age of housing',
+  'Distance to commute',
+  'Distance to highway',
+  'Tax rate',
+  'School class size',
+  'School drop-out rate'
+]
+
 /**
  * Boston Housing
  */
@@ -107,7 +122,10 @@ class BostonStore {
               .getWeights()[0]
               .data()
               .then(kernelAsArr => {
-                const weightsList = describeKerenelElements(kernelAsArr)
+                const weightsList = describeKerenelElements(
+                  kernelAsArr,
+                  featureDescriptions
+                )
                 console.log('weightsList: ', weightsList)
                 // ui.updateWeightDescription(weightsList)
               })

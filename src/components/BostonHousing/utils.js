@@ -1,22 +1,6 @@
 import _ from 'lodash'
-// import _ from 'lodash'
 import Papa from 'papaparse'
 import * as tf from '@tensorflow/tfjs'
-
-export const featureDescriptions = [
-  'Crime rate',
-  'Land zone size',
-  'Industrial proportion',
-  'Next to river',
-  'Nitric oxide concentration',
-  'Number of rooms per house',
-  'Age of housing',
-  'Distance to commute',
-  'Distance to highway',
-  'Tax rate',
-  'School class size',
-  'School drop-out rate'
-]
 
 /**
  * Builds and returns Linear Regression Model.
@@ -63,17 +47,15 @@ export function arraysToTensors(
  * @returns {List} List of objects, each with a string feature name, and value
  *     feature weight.
  */
-export function describeKerenelElements(kernel) {
+export function describeKerenelElements(kernel, featureDescriptions) {
+  const kernelSize = featureDescriptions.length
   tf.util.assert(
-    kernel.length == 12,
-    `kernel must be a array of length 12, got ${kernel.length}`
+    kernel.length === kernelSize,
+    `kernel must match featureDescriptions, got ${kernelSize}`
   )
-  // TODO: functionalize this
-  const outList = []
-  for (let idx = 0; idx < kernel.length; idx++) {
-    outList.push({ description: featureDescriptions[idx], value: kernel[idx] })
-  }
-  return outList
+  return _.map(kernel, (kernalValue, index) => {
+    return { description: featureDescriptions[index], value: kernalValue }
+  })
 }
 
 /**
