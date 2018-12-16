@@ -5,6 +5,7 @@ import {
   observable,
   decorate,
   action,
+  computed,
   runInAction,
   autorun
 } from 'mobx'
@@ -55,24 +56,18 @@ class BostonStore {
     autorun(() => this.fetchBostonFiles(this.bostonFilesInfo))
   }
 
-  NUM_EPOCHS = 200
+  NUM_EPOCHS = 50
   BATCH_SIZE = 40
   LEARNING_RATE = 0.01
   tensors = {}
   numFeatures = null
   bostonDataIsLoading = true
-  isTraining = {
-    linear: false
-  }
-  currentEpochValue = {
-    linear: 0
-  }
-  trainLogs = {
-    linear: []
-  }
-  weightsList = {
-    linear: []
-  }
+
+  // Linear Regression
+  currentEpochValueLinear = 0
+  trainingLogsLinear = []
+  isTrainingLinear = false
+  weightsListLinear = []
 
   async trainLinearRegressor() {
     const model = linearRegressionModel(this.numFeatures)
@@ -108,7 +103,8 @@ class BostonStore {
       optimizer: tf.train.sgd(LEARNING_RATE),
       loss: 'meanSquaredError'
     })
-    this.isTraining[modelName] = true
+    // this.isTraining[modelName] = true
+    this.isTrainingLinear = true
     await model.fit(tensors.trainFeatures, tensors.trainTarget, {
       batchSize: BATCH_SIZE,
       epochs: NUM_EPOCHS,
@@ -116,18 +112,18 @@ class BostonStore {
       callbacks: {
         onEpochEnd: async (epoch, logs) => {
           runInAction(() => {
-            this.currentEpochValue[modelName] = epoch
-            this.trainLogs[modelName].push(logs)
+            this.currentEpochValueLinear = epoch
+            this.trainingLogsLinear.push({ epoch, ...logs })
+            // debugger
             // tfvis.show.history(container, trainLogs, ['loss', 'val_loss'])
           })
-
           if (weightsIllustration) {
             model.layers[0]
               .getWeights()[0]
               .data()
               .then(kernelAsArr => {
                 runInAction(() => {
-                  this.weightsList[modelName] = describeKernelElements(
+                  this.weightsListLinear = describeKernelElements(
                     kernelAsArr,
                     featureDescriptions
                   )
@@ -135,8 +131,11 @@ class BostonStore {
               })
           }
         },
-        onTrainEnd: (a, b) => {
-          console.log('onTrainEnd: ', a, b)
+        onTrainEnd: () => {
+          runInAction(() => {
+            // this.isTraining[modelName] = false
+            this.isTrainingLinear = false
+          })
         }
       }
     })
@@ -188,9 +187,14 @@ decorate(BostonStore, {
   tensors: observable,
   numFeatures: observable,
   bostonDataIsLoading: observable,
-  currentEpochValue: observable,
-  trainLogs: observable,
-  weightsList: observable
+  // currentEpochValue: observable,
+  // trainLogs: observable,
+  // weightsList: observable,
+
+  currentEpochValueLinear: observable,
+  trainingLogsLinear: observable,
+  isTrainingLinear: observable,
+  weightsListLinear: observable
 })
 
 export default BostonStore
