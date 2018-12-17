@@ -5,7 +5,6 @@ import {
   observable,
   decorate,
   action,
-  computed,
   runInAction,
   autorun
 } from 'mobx'
@@ -62,12 +61,18 @@ class BostonStore {
   tensors = {}
   numFeatures = null
   bostonDataIsLoading = true
-
-  // Linear Regression
-  currentEpochValueLinear = 0
-  trainingLogsLinear = []
-  isTrainingLinear = false
-  weightsListLinear = []
+  currentEpoch = {
+    linear: 0
+  }
+  trainingState = {
+    linear: 'None'
+  }
+  trainingLogs = {
+    linear: []
+  }
+  weightsList = {
+    linear: []
+  }
 
   async trainLinearRegressor() {
     const model = linearRegressionModel(this.numFeatures)
@@ -88,7 +93,7 @@ class BostonStore {
   // of passing them in. I prefer to explicitly pass them in though since it
   // makes a clearer and more testable function. But this function has side effects
 
-  // I could put this in utils and then just pass in this.currentEpochValue and trainLogs
+  // I could put this in utils and then just pass in this.currentEpoch and trainLogs
   // TODO: Move compile step into trainLinearRegressor?
   async run({
     model,
@@ -103,8 +108,7 @@ class BostonStore {
       optimizer: tf.train.sgd(LEARNING_RATE),
       loss: 'meanSquaredError'
     })
-    // this.isTraining[modelName] = true
-    this.isTrainingLinear = true
+    this.trainingState[modelName] = 'Training'
     await model.fit(tensors.trainFeatures, tensors.trainTarget, {
       batchSize: BATCH_SIZE,
       epochs: NUM_EPOCHS,
@@ -112,8 +116,8 @@ class BostonStore {
       callbacks: {
         onEpochEnd: async (epoch, logs) => {
           runInAction(() => {
-            this.currentEpochValueLinear = epoch
-            this.trainingLogsLinear.push({ epoch, ...logs })
+            this.currentEpoch[modelName] = epoch
+            this.trainingLogs[modelName].push({ epoch, ...logs })
           })
           if (weightsIllustration) {
             model.layers[0]
@@ -121,7 +125,7 @@ class BostonStore {
               .data()
               .then(kernelAsArr => {
                 runInAction(() => {
-                  this.weightsListLinear = describeKernelElements(
+                  this.weightsList[modelName] = describeKernelElements(
                     kernelAsArr,
                     featureDescriptions
                   )
@@ -131,8 +135,7 @@ class BostonStore {
         },
         onTrainEnd: () => {
           runInAction(() => {
-            // this.isTraining[modelName] = false
-            this.isTrainingLinear = false
+            this.trainingState[modelName] = 'Trained'
           })
         }
       }
@@ -185,14 +188,10 @@ decorate(BostonStore, {
   tensors: observable,
   numFeatures: observable,
   bostonDataIsLoading: observable,
-  // currentEpochValue: observable,
-  // trainLogs: observable,
-  // weightsList: observable,
-
-  currentEpochValueLinear: observable,
-  trainingLogsLinear: observable,
-  isTrainingLinear: observable,
-  weightsListLinear: observable
+  currentEpoch: observable,
+  trainingState: observable,
+  trainingLogs: observable,
+  weightsList: observable
 })
 
 export default BostonStore

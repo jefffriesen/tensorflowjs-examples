@@ -18,11 +18,7 @@ class BostonHousing extends Component {
   }
 
   render() {
-    const {
-      currentEpochValueLinear,
-      NUM_EPOCHS,
-      isTrainingLinear
-    } = this.props.bostonStore
+    const { currentEpoch, NUM_EPOCHS } = this.props.bostonStore
     return (
       <div>
         <Grid columns='equal' padded>
@@ -61,10 +57,9 @@ class BostonHousing extends Component {
               <Button fluid color='orange' onClick={this.trainLinearRegressor}>
                 Train Linear Regressor
               </Button>
-              {isTrainingLinear && <p>Starting training process...</p>}
-              <LossChart />
+              <LossChart modelName='linear' />
               <p>
-                Epoch {currentEpochValueLinear + 1} of {NUM_EPOCHS} completed
+                Epoch {currentEpoch.linear + 1} of {NUM_EPOCHS} completed
               </p>
               <h4>Weights by magnitude</h4>
             </Grid.Column>

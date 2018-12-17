@@ -1,5 +1,4 @@
 import React from 'react'
-import _ from 'lodash'
 import {
   LineChart,
   Line,
@@ -12,10 +11,10 @@ import {
 } from 'recharts'
 import { inject, observer } from 'mobx-react'
 
-const LossChart = ({ bostonStore }) => {
-  const linearRegressionData = bostonStore.trainingLogsLinear
-  if (_.isEmpty(linearRegressionData)) {
-    return <p>empty data</p>
+const LossChart = ({ bostonStore, modelName }) => {
+  const linearRegressionData = bostonStore.trainingLogs[modelName]
+  if (bostonStore.trainingState.linear === 'None') {
+    return null
   }
   return (
     <ResponsiveContainer height={300}>
