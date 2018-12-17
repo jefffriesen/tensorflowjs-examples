@@ -114,8 +114,6 @@ class BostonStore {
           runInAction(() => {
             this.currentEpochValueLinear = epoch
             this.trainingLogsLinear.push({ epoch, ...logs })
-            // debugger
-            // tfvis.show.history(container, trainLogs, ['loss', 'val_loss'])
           })
           if (weightsIllustration) {
             model.layers[0]

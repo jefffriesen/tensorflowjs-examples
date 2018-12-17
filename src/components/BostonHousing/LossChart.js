@@ -18,16 +18,23 @@ const LossChart = ({ bostonStore }) => {
     return <p>empty data</p>
   }
   return (
-    <ResponsiveContainer height={400}>
+    <ResponsiveContainer height={300}>
       <LineChart
         key={Math.random()} // Force rerendering every time the data changes
         data={linearRegressionData}
         margin={{ top: 5, right: 30, left: 20, bottom: 25 }}>
-        <XAxis dataKey='epoch' />
+        <XAxis
+          dataKey='epoch'
+          label={{
+            value: 'Iteration (Epoch)',
+            offset: -10,
+            position: 'insideBottom'
+          }}
+        />
         <YAxis />
         <CartesianGrid strokeDasharray='3 3' />
         <Tooltip />
-        <Legend />
+        <Legend verticalAlign='top' align='right' />
         <Line
           type='monotone'
           dataKey='loss'
