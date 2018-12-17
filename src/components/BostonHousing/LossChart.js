@@ -13,9 +13,6 @@ import { inject, observer } from 'mobx-react'
 
 const LossChart = ({ bostonStore, modelName }) => {
   const linearRegressionData = bostonStore.trainingLogs[modelName]
-  if (bostonStore.trainingState.linear === 'None') {
-    return null
-  }
   return (
     <ResponsiveContainer height={300}>
       <LineChart
@@ -33,7 +30,8 @@ const LossChart = ({ bostonStore, modelName }) => {
         <YAxis label={{ value: 'Value', angle: -90, position: 'insideLeft' }} />
         <CartesianGrid strokeDasharray='3 3' />
         <Tooltip />
-        <Legend verticalAlign='top' align='right' />
+        {/* iconType='line' still produced a circle on a line... I wish it didn't */}
+        <Legend verticalAlign='top' align='right' iconType='line' />
         <Line
           type='monotone'
           dataKey='loss'

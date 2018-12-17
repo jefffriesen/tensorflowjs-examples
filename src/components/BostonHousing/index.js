@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import _ from 'lodash'
 import { observer, inject } from 'mobx-react'
-import { Grid, Button } from 'semantic-ui-react'
+import { Grid, Button, Table, Header } from 'semantic-ui-react'
 import LossChart from './LossChart'
 
 class BostonHousing extends Component {
@@ -18,7 +19,11 @@ class BostonHousing extends Component {
   }
 
   render() {
-    const { currentEpoch, NUM_EPOCHS } = this.props.bostonStore
+    const {
+      currentEpoch,
+      NUM_EPOCHS,
+      weightsListLinearSorted
+    } = this.props.bostonStore
     return (
       <div>
         <Grid columns='equal' padded>
@@ -57,11 +62,16 @@ class BostonHousing extends Component {
               <Button fluid color='orange' onClick={this.trainLinearRegressor}>
                 Train Linear Regressor
               </Button>
-              <LossChart modelName='linear' />
-              <p>
-                Epoch {currentEpoch.linear + 1} of {NUM_EPOCHS} completed
-              </p>
-              <h4>Weights by magnitude</h4>
+              {!_.isEmpty(weightsListLinearSorted) && (
+                <div>
+                  <LossChart modelName='linear' />
+                  <h4>
+                    Epoch {currentEpoch.linear + 1} of {NUM_EPOCHS} completed
+                  </h4>
+                  <h4>Weights by absolute magnitude</h4>
+                  <WeightsMagnitudeTable weights={weightsListLinearSorted} />
+                </div>
+              )}
             </Grid.Column>
 
             {/* Neural Network 1 */}
@@ -90,3 +100,24 @@ class BostonHousing extends Component {
 }
 
 export default inject('bostonStore')(observer(BostonHousing))
+
+const WeightsMagnitudeTable = ({ weights }) => {
+  return (
+    <Table basic='very' compact='very'>
+      <Table.Body>
+        {_.map(weights, ({ description, value }) => {
+          return (
+            <Table.Row key={description}>
+              <Table.Cell>{description}</Table.Cell>
+              <Table.Cell textAlign='right'>
+                <Header as='h5' color={value > 0 ? 'green' : 'red'}>
+                  {value}
+                </Header>
+              </Table.Cell>
+            </Table.Row>
+          )
+        })}
+      </Table.Body>
+    </Table>
+  )
+}

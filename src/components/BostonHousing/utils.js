@@ -54,7 +54,10 @@ export function describeKernelElements(kernel, featureDescriptions) {
     `kernel must match featureDescriptions, got ${kernelSize}`
   )
   return _.map(kernel, (kernalValue, index) => {
-    return { description: featureDescriptions[index], value: kernalValue }
+    return {
+      description: featureDescriptions[index],
+      value: _.round(kernalValue, 2)
+    }
   })
 }
 

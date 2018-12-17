@@ -5,6 +5,7 @@ import {
   observable,
   decorate,
   action,
+  computed,
   runInAction,
   autorun
 } from 'mobx'
@@ -72,6 +73,12 @@ class BostonStore {
   }
   weightsList = {
     linear: []
+  }
+
+  get weightsListLinearSorted() {
+    return this.weightsList.linear
+      .slice()
+      .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
   }
 
   async trainLinearRegressor() {
@@ -191,7 +198,8 @@ decorate(BostonStore, {
   currentEpoch: observable,
   trainingState: observable,
   trainingLogs: observable,
-  weightsList: observable
+  weightsList: observable,
+  weightsListLinearSorted: computed
 })
 
 export default BostonStore
