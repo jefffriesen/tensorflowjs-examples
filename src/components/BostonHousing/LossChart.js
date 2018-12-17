@@ -30,7 +30,7 @@ const LossChart = ({ bostonStore, modelName }) => {
             position: 'insideBottom'
           }}
         />
-        <YAxis />
+        <YAxis label={{ value: 'Value', angle: -90, position: 'insideLeft' }} />
         <CartesianGrid strokeDasharray='3 3' />
         <Tooltip />
         <Legend verticalAlign='top' align='right' />
