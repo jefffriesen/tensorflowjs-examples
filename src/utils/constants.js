@@ -1,7 +1,9 @@
 import _ from 'lodash'
 import Color from 'color'
 
-export const PI = 3.14
+export const headerColor = '#818181'
+export const accentColor = '#f2711c'
+
 export const HOURS_PER_YEAR = 8760
 
 // Luxon Tokens: https://moment.github.io/luxon/docs/manual/formatting.html#toformat

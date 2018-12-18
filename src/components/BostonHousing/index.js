@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { observer, inject } from 'mobx-react'
 import { Grid, Button, Table, Header } from 'semantic-ui-react'
 import LossChart from './LossChart'
+import { PrimaryHeader } from '../Elements/Header'
 
 class BostonHousing extends Component {
   trainLinearRegressor = () => {
@@ -26,15 +27,21 @@ class BostonHousing extends Component {
     } = this.props.bostonStore
     return (
       <div>
-        <Grid columns='equal' padded>
+        <Grid columns='equal' padded divided>
           <Grid.Row>
             <Grid.Column>
-              Recreation of the{' '}
-              <a href='https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing'>
-                Boston Housing data example
-              </a>{' '}
-              for tensorflow.js
-              <h3>Description</h3>
+              <Header as='h1'>Multivariate Regression</Header>
+              <Header as='h3'>
+                Compare different models for housing price prediction.
+              </Header>
+              <p>
+                Recreation of the
+                <a href='https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing'>
+                  Boston Housing data example
+                </a>{' '}
+                using React and Recharts (instead of tfjs-vis).
+              </p>
+              <PrimaryHeader>Description</PrimaryHeader>
               <p>
                 This example shows you how to perform regression with more than
                 one input feature using the Boston Housing Dataset, which is a
@@ -49,19 +56,16 @@ class BostonHousing extends Component {
                 of the model and the feature associated with each of those
                 weights.
               </p>
-              <h3>Status</h3>
+              <PrimaryHeader>Status</PrimaryHeader>
               <p>Data is now available as tensors. TODO</p>
               <p>Click a train button to begin.</p>
               <p>Baseline loss (meanSquaredError) is TODO</p>
-              <h3>Training Progress</h3>
+              <PrimaryHeader>Training Progress</PrimaryHeader>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
             {/* Linear Regression */}
             <Grid.Column>
-              <Button fluid color='orange' onClick={this.trainLinearRegressor}>
-                Train Linear Regressor
-              </Button>
               {!_.isEmpty(weightsListLinearSorted) && (
                 <div>
                   <LossChart modelName='linear' />
@@ -72,6 +76,9 @@ class BostonHousing extends Component {
                   <WeightsMagnitudeTable weights={weightsListLinearSorted} />
                 </div>
               )}
+              <Button fluid color='orange' onClick={this.trainLinearRegressor}>
+                Train Linear Regressor
+              </Button>
             </Grid.Column>
 
             {/* Neural Network 1 */}
@@ -79,7 +86,6 @@ class BostonHousing extends Component {
               <Button fluid color='orange' onClick={this.trainLinearNN1}>
                 Train Neural Network Regressor (1 hidden layer)
               </Button>
-              <h4>Training Progress</h4>
             </Grid.Column>
 
             {/* Neural Network 2 */}
@@ -87,7 +93,6 @@ class BostonHousing extends Component {
               <Button fluid color='orange' onClick={this.trainLinearNN2}>
                 Train Neural Network Regressor (2 hidden layers)
               </Button>
-              <h4>Training Progress</h4>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
