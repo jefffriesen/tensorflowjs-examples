@@ -24,13 +24,13 @@ class BostonHousing extends Component {
     const {
       bostonDataIsLoading,
       currentEpoch,
-      baseline,
       NUM_EPOCHS,
       BATCH_SIZE,
       LEARNING_RATE,
       numFeatures,
       baselineLoss,
-      weightsListLinearSorted
+      weightsListLinearSorted,
+      readyToModel
     } = this.props.bostonStore
     return (
       <div>
@@ -89,7 +89,9 @@ class BostonHousing extends Component {
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
-            {/* Linear Regression */}
+            {/**
+             * Linear Regression
+             */}
             <Grid.Column>
               {!_.isEmpty(weightsListLinearSorted) && (
                 <div>
@@ -104,22 +106,34 @@ class BostonHousing extends Component {
               <Button
                 fluid
                 color='orange'
-                disabled={bostonDataIsLoading}
+                disabled={!readyToModel}
                 onClick={this.trainLinearRegressor}>
                 Train Linear Regressor
               </Button>
             </Grid.Column>
 
-            {/* Neural Network 1 */}
+            {/**
+             * Neural Network 1
+             */}
             <Grid.Column>
-              <Button fluid color='orange' onClick={this.trainLinearNN1}>
+              <Button
+                fluid
+                color='orange'
+                disabled={!readyToModel}
+                onClick={this.trainLinearNN1}>
                 Train Neural Network Regressor (1 hidden layer)
               </Button>
             </Grid.Column>
 
-            {/* Neural Network 2 */}
+            {/**
+             *Neural Network 2
+             */}
             <Grid.Column>
-              <Button fluid color='orange' onClick={this.trainLinearNN2}>
+              <Button
+                fluid
+                color='orange'
+                disabled={!readyToModel}
+                onClick={this.trainLinearNN2}>
                 Train Neural Network Regressor (2 hidden layers)
               </Button>
             </Grid.Column>

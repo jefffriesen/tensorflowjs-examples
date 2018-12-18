@@ -79,6 +79,10 @@ class BostonStore {
     return this.bostonDataIsLoading ? 0 : computeBaseline(this.tensors)
   }
 
+  get readyToModel() {
+    return !this.bostonDataIsLoading && Boolean(this.numFeatures)
+  }
+
   async trainLinearRegressor() {
     const model = linearRegressionModel(this.numFeatures)
     await this.run({
@@ -196,7 +200,8 @@ decorate(BostonStore, {
   trainingLogs: observable,
   weightsList: observable,
   weightsListLinearSorted: computed,
-  baselineLoss: computed
+  baselineLoss: computed,
+  readyToModel: computed
 })
 
 export default BostonStore
