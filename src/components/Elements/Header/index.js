@@ -13,7 +13,7 @@ export const PrimaryHeader = ({ children }) => {
 const headerStyle = {
   color: headerColor,
   fontWeight: 200,
-  paddingLeft: '1rem',
+  paddingLeft: '0.8rem',
   borderLeft: `1px solid ${accentColor}`,
   textTransform: 'uppercase'
 }

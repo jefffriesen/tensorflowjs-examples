@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 import { observer, inject } from 'mobx-react'
-import { Grid, Button, Table, Header } from 'semantic-ui-react'
+import { Grid, Button, Table, Header, Segment } from 'semantic-ui-react'
 import LossChart from './LossChart'
 import { PrimaryHeader } from '../Elements/Header'
 
@@ -21,6 +21,7 @@ class BostonHousing extends Component {
 
   render() {
     const {
+      bostonDataIsLoading,
       currentEpoch,
       NUM_EPOCHS,
       weightsListLinearSorted
@@ -30,36 +31,48 @@ class BostonHousing extends Component {
         <Grid columns='equal' padded divided>
           <Grid.Row>
             <Grid.Column>
-              <Header as='h1'>Multivariate Regression</Header>
-              <Header as='h3'>
-                Compare different models for housing price prediction.
-              </Header>
-              <p>
-                Recreation of the
-                <a href='https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing'>
-                  Boston Housing data example
-                </a>{' '}
-                using React and Recharts (instead of tfjs-vis).
-              </p>
+              <Segment basic>
+                <Header as='h1'>Multivariate Regression</Header>
+                <Header as='h3'>
+                  Compare different models for housing price prediction.
+                </Header>
+                <p>
+                  Recreation of the{' '}
+                  <a href='https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing'>
+                    Boston Housing data example
+                  </a>{' '}
+                  using React and Recharts (instead of tfjs-vis).
+                </p>
+              </Segment>
               <PrimaryHeader>Description</PrimaryHeader>
-              <p>
-                This example shows you how to perform regression with more than
-                one input feature using the Boston Housing Dataset, which is a
-                famous dataset derived from information collected by the U.S.
-                Census Service concerning housing in the area of Boston
-                Massachusetts.
-              </p>
-              <p>
-                It allows you to compare the perfomance of 3 different models
-                for predicting the house prices. When training the linear model,
-                it will also display the largest 5 weights (by absolute value)
-                of the model and the feature associated with each of those
-                weights.
-              </p>
+              <Segment basic>
+                <p>
+                  This example shows you how to perform regression with more
+                  than one input feature using the Boston Housing Dataset, which
+                  is a famous dataset derived from information collected by the
+                  U.S. Census Service concerning housing in the area of Boston
+                  Massachusetts.
+                </p>
+                <p>
+                  It allows you to compare the perfomance of 3 different models
+                  for predicting the house prices. When training the linear
+                  model, it will also display the largest 5 weights (by absolute
+                  value) of the model and the feature associated with each of
+                  those weights.
+                </p>
+              </Segment>
               <PrimaryHeader>Status</PrimaryHeader>
-              <p>Data is now available as tensors. TODO</p>
-              <p>Click a train button to begin.</p>
-              <p>Baseline loss (meanSquaredError) is TODO</p>
+              <Segment basic>
+                {bostonDataIsLoading ? (
+                  <p>Data is loading...</p>
+                ) : (
+                  <p>
+                    Data is now available as tensors. <br />
+                    Click a train button to begin.
+                  </p>
+                )}
+                <p>Baseline loss (meanSquaredError) is TODO</p>
+              </Segment>
               <PrimaryHeader>Training Progress</PrimaryHeader>
             </Grid.Column>
           </Grid.Row>
