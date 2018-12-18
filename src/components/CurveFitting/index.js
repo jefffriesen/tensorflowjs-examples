@@ -110,7 +110,7 @@ const ChartTitle = ({ title, coeffTitle, coeff }) => {
             {_.isEmpty(coeff) ? (
               <Loader active inline size='mini' style={{ height: 73 }} />
             ) : (
-              <CoefficientTable coeff={coeff} />
+              <CoefficientsTable coeff={coeff} />
             )}
           </Grid.Column>
         </Grid.Row>
@@ -119,17 +119,17 @@ const ChartTitle = ({ title, coeffTitle, coeff }) => {
   )
 }
 
-const CoefficientTable = ({ coeff }) => {
+const CoefficientsTable = ({ coeff }) => {
   const { a, b, c, d } = coeff
   return (
     <Table compact='very' celled size='small' basic='very'>
       <Table.Body>
         <Table.Row>
-          <Table.HeaderCell>a</Table.HeaderCell>
-          <Table.HeaderCell>b</Table.HeaderCell>
-          <Table.HeaderCell>c</Table.HeaderCell>
-          <Table.HeaderCell>d</Table.HeaderCell>
-          <Table.HeaderCell>polynomial</Table.HeaderCell>
+          <Table.Cell>a</Table.Cell>
+          <Table.Cell>b</Table.Cell>
+          <Table.Cell>c</Table.Cell>
+          <Table.Cell>d</Table.Cell>
+          <Table.Cell>polynomial</Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell>{a}</Table.Cell>

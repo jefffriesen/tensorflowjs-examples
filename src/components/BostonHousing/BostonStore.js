@@ -45,13 +45,6 @@ const featureDescriptions = [
 /**
  * Boston Housing
  */
-
-// How to update a chart during training: (callback)
-// const callbacks = tfvis.show.fitCallbacks(container, metrics);
-//           return train(model, data, callbacks);
-// Another option is to wait for the training to complete and render the loss curve when it is done.
-// https://storage.googleapis.com/tfjs-vis/mnist/dist/index.html
-
 class BostonStore {
   constructor() {
     autorun(() => this.fetchBostonFiles(this.bostonFilesInfo))
@@ -82,7 +75,7 @@ class BostonStore {
       .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
   }
 
-  get baseline() {
+  get baselineLoss() {
     return this.bostonDataIsLoading ? 0 : computeBaseline(this.tensors)
   }
 
@@ -104,9 +97,7 @@ class BostonStore {
   // store I could just reference all of the store values like BATCH_SIZE intead
   // of passing them in. I prefer to explicitly pass them in though since it
   // makes a clearer and more testable function. But this function has side effects
-
   // I could put this in utils and then just pass in this.currentEpoch and trainLogs
-  // TODO: Move compile step into trainLinearRegressor?
   async run({
     model,
     tensors,
@@ -205,7 +196,7 @@ decorate(BostonStore, {
   trainingLogs: observable,
   weightsList: observable,
   weightsListLinearSorted: computed,
-  baseline: computed
+  baselineLoss: computed
 })
 
 export default BostonStore
