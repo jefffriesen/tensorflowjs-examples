@@ -15,7 +15,9 @@ import {
   shuffle,
   linearRegressionModel,
   describeKernelElements,
-  computeBaseline
+  computeBaseline,
+  multiLayerPerceptronRegressionModel1Hidden,
+  multiLayerPerceptronRegressionModel2Hidden
 } from './utils'
 configure({ enforceActions: 'observed' })
 
@@ -57,13 +59,19 @@ class BostonStore {
   numFeatures = null
   bostonDataIsLoading = true
   currentEpoch = {
-    linear: 0
+    linear: 0,
+    oneHidden: 0,
+    twoHidden: 0
   }
   trainingState = {
-    linear: 'None'
+    linear: 'None',
+    oneHidden: 'None',
+    twoHidden: 'None'
   }
   trainingLogs = {
-    linear: []
+    linear: [],
+    oneHidden: [],
+    twoHidden: []
   }
   weightsList = {
     linear: []
@@ -90,6 +98,32 @@ class BostonStore {
       tensors: this.tensors,
       modelName: 'linear',
       weightsIllustration: true,
+      LEARNING_RATE: this.LEARNING_RATE,
+      BATCH_SIZE: this.BATCH_SIZE,
+      NUM_EPOCHS: this.NUM_EPOCHS
+    })
+  }
+
+  async trainNeuralNetworkLinearRegression1Hidden() {
+    const model = multiLayerPerceptronRegressionModel1Hidden(this.numFeatures)
+    await this.run({
+      model,
+      tensors: this.tensors,
+      modelName: 'oneHidden',
+      weightsIllustration: false,
+      LEARNING_RATE: this.LEARNING_RATE,
+      BATCH_SIZE: this.BATCH_SIZE,
+      NUM_EPOCHS: this.NUM_EPOCHS
+    })
+  }
+
+  async trainNeuralNetworkLinearRegression2Hidden() {
+    const model = multiLayerPerceptronRegressionModel1Hidden(this.numFeatures)
+    await this.run({
+      model,
+      tensors: this.tensors,
+      modelName: 'twoHidden',
+      weightsIllustration: false,
       LEARNING_RATE: this.LEARNING_RATE,
       BATCH_SIZE: this.BATCH_SIZE,
       NUM_EPOCHS: this.NUM_EPOCHS

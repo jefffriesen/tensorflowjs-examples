@@ -14,15 +14,18 @@ class BostonHousing extends Component {
 
   trainLinearNN1 = () => {
     console.log('training Neural Network Regressor (1 hidden layer)')
+    this.props.bostonStore.trainNeuralNetworkLinearRegression1Hidden()
   }
 
   trainLinearNN2 = () => {
     console.log('training Neural Network Regressor (2 hidden layers)')
+    this.props.bostonStore.trainNeuralNetworkLinearRegression2Hidden()
   }
 
   render() {
     const {
       bostonDataIsLoading,
+      trainingState,
       currentEpoch,
       NUM_EPOCHS,
       BATCH_SIZE,
@@ -97,7 +100,7 @@ class BostonHousing extends Component {
                 <div>
                   <LossChart modelName='linear' />
                   <h4>
-                    Epoch {currentEpoch.linear + 1} of {NUM_EPOCHS} completed
+                    Epoch {currentEpoch['linear'] + 1} of {NUM_EPOCHS} completed
                   </h4>
                   <h4>Weights by absolute magnitude</h4>
                   <WeightsMagnitudeTable weights={weightsListLinearSorted} />
@@ -116,6 +119,15 @@ class BostonHousing extends Component {
              * Neural Network 1
              */}
             <Grid.Column>
+              {trainingState['oneHidden'] !== 'None' && (
+                <div>
+                  <LossChart modelName='oneHidden' />
+                  <h4>
+                    Epoch {currentEpoch['oneHidden'] + 1} of {NUM_EPOCHS}{' '}
+                    completed
+                  </h4>
+                </div>
+              )}
               <Button
                 fluid
                 color='orange'
@@ -129,6 +141,15 @@ class BostonHousing extends Component {
              *Neural Network 2
              */}
             <Grid.Column>
+              {trainingState['twoHidden'] !== 'None' && (
+                <div>
+                  <LossChart modelName='twoHidden' />
+                  <h4>
+                    Epoch {currentEpoch['twoHidden'] + 1} of {NUM_EPOCHS}{' '}
+                    completed
+                  </h4>
+                </div>
+              )}
               <Button
                 fluid
                 color='orange'

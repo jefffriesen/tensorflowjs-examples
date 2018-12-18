@@ -14,6 +14,11 @@ TODO:
 https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing
 
 TODO:
+* Fix bottom margin on chart
+* What is the final result of the training? Compare with Baseline?
+  * Final train-set loss: 19.5457
+  * Final validation-set loss: 13.0691
+  * Test-set loss: 19.3876
 
 
 ## 3. HOMER Battery State of Charge Curve Fitting

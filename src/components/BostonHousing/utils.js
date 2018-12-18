@@ -15,6 +15,57 @@ export function linearRegressionModel(numFeatures) {
 }
 
 /**
+ * Builds and returns Multi Layer Perceptron Regression Model
+ * with 1 hidden layers, each with 10 units activated by sigmoid.
+ *
+ * @returns {tf.Sequential} The multi layer perceptron regression model.
+ */
+export function multiLayerPerceptronRegressionModel1Hidden(numFeatures) {
+  const model = tf.sequential()
+  model.add(
+    tf.layers.dense({
+      inputShape: [numFeatures],
+      units: 50,
+      activation: 'sigmoid',
+      kernelInitializer: 'leCunNormal'
+    })
+  )
+  model.add(tf.layers.dense({ units: 1 }))
+
+  model.summary()
+  return model
+}
+
+/**
+ * Builds and returns Multi Layer Perceptron Regression Model
+ * with 2 hidden layers, each with 10 units activated by sigmoid.
+ *
+ * @returns {tf.Sequential} The multi layer perceptron regression mode  l.
+ */
+export function multiLayerPerceptronRegressionModel2Hidden(numFeatures) {
+  const model = tf.sequential()
+  model.add(
+    tf.layers.dense({
+      inputShape: [numFeatures],
+      units: 50,
+      activation: 'sigmoid',
+      kernelInitializer: 'leCunNormal'
+    })
+  )
+  model.add(
+    tf.layers.dense({
+      units: 50,
+      activation: 'sigmoid',
+      kernelInitializer: 'leCunNormal'
+    })
+  )
+  model.add(tf.layers.dense({ units: 1 }))
+
+  model.summary()
+  return model
+}
+
+/**
  * Convert loaded data into tensors and creates normalized versions of the features.
  * @param {*} data
  */
