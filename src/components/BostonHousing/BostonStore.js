@@ -14,7 +14,8 @@ import {
   arraysToTensors,
   shuffle,
   linearRegressionModel,
-  describeKernelElements
+  describeKernelElements,
+  computeBaseline
 } from './utils'
 configure({ enforceActions: 'observed' })
 
@@ -79,6 +80,10 @@ class BostonStore {
     return this.weightsList.linear
       .slice()
       .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+  }
+
+  get baseline() {
+    return this.bostonDataIsLoading ? 0 : computeBaseline(this.tensors)
   }
 
   async trainLinearRegressor() {
@@ -199,7 +204,8 @@ decorate(BostonStore, {
   trainingState: observable,
   trainingLogs: observable,
   weightsList: observable,
-  weightsListLinearSorted: computed
+  weightsListLinearSorted: computed,
+  baseline: computed
 })
 
 export default BostonStore

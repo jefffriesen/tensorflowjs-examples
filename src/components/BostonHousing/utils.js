@@ -61,6 +61,14 @@ export function describeKernelElements(kernel, featureDescriptions) {
   })
 }
 
+export function computeBaseline(tensors) {
+  const avgPrice = tf.mean(tensors.trainTarget)
+  const baseline = tf.mean(tf.pow(tf.sub(tensors.testTarget, avgPrice), 2))
+  console.log(`Average price: ${avgPrice.dataSync()}`)
+  console.log(`Baseline loss: ${baseline.dataSync()}`)
+  return baseline.dataSync()[0].toFixed(2)
+}
+
 /**
  * Calculates the mean and standard deviation of each column of a data array.
  *

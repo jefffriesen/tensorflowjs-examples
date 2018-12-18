@@ -23,6 +23,7 @@ class BostonHousing extends Component {
     const {
       bostonDataIsLoading,
       currentEpoch,
+      baseline,
       NUM_EPOCHS,
       weightsListLinearSorted
     } = this.props.bostonStore
@@ -71,7 +72,7 @@ class BostonHousing extends Component {
                     Click a train button to begin.
                   </p>
                 )}
-                <p>Baseline loss (meanSquaredError) is TODO</p>
+                <p>Baseline loss (meanSquaredError) is {baseline}</p>
               </Segment>
               <PrimaryHeader>Training Progress</PrimaryHeader>
             </Grid.Column>
