@@ -17,7 +17,9 @@ import {
   describeKernelElements,
   computeBaseline,
   multiLayerPerceptronRegressionModel1Hidden,
-  multiLayerPerceptronRegressionModel2Hidden
+  multiLayerPerceptronRegressionModel2Hidden,
+  calculateFinalLoss,
+  calculateTestSetLoss
 } from './utils'
 configure({ enforceActions: 'observed' })
 
@@ -76,6 +78,21 @@ class BostonStore {
   weightsList = {
     linear: []
   }
+  finalTrainSetLoss = {
+    linear: null,
+    oneHidden: null,
+    twoHidden: null
+  }
+  finalValidationSetLoss = {
+    linear: null,
+    oneHidden: null,
+    twoHidden: null
+  }
+  testSetLoss = {
+    linear: null,
+    oneHidden: null,
+    twoHidden: null
+  }
 
   get weightsListLinearSorted() {
     return this.weightsList.linear
@@ -118,7 +135,7 @@ class BostonStore {
   }
 
   async trainNeuralNetworkLinearRegression2Hidden() {
-    const model = multiLayerPerceptronRegressionModel1Hidden(this.numFeatures)
+    const model = multiLayerPerceptronRegressionModel2Hidden(this.numFeatures)
     await this.run({
       model,
       tensors: this.tensors,
@@ -175,7 +192,19 @@ class BostonStore {
           }
         },
         onTrainEnd: () => {
+          const testSetLoss = calculateTestSetLoss(
+            model,
+            tensors,
+            this.BATCH_SIZE
+          )
+          const {
+            finalTrainSetLoss,
+            finalValidationSetLoss
+          } = calculateFinalLoss(this.trainingLogs[modelName])
           runInAction(() => {
+            this.testSetLoss[modelName] = testSetLoss
+            this.finalTrainSetLoss[modelName] = finalTrainSetLoss
+            this.finalValidationSetLoss[modelName] = finalValidationSetLoss
             this.trainingState[modelName] = 'Trained'
           })
         }
@@ -233,6 +262,9 @@ decorate(BostonStore, {
   trainingState: observable,
   trainingLogs: observable,
   weightsList: observable,
+  finalTrainSetLoss: observable,
+  finalValidationSetLoss: observable,
+  testSetLoss: observable,
   weightsListLinearSorted: computed,
   baselineLoss: computed,
   readyToModel: computed

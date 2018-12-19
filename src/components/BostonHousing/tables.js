@@ -65,3 +65,43 @@ export const ModelParametersTable = ({
     </Table>
   )
 }
+
+export const FinalLossTable = ({
+  isTrained,
+  finalTrainSetLoss,
+  finalValidationSetLoss,
+  testSetLoss
+}) => {
+  return (
+    <Table compact='very' celled size='small' basic='very'>
+      <Table.Body>
+        <Table.Row>
+          <Table.Cell>Final train-set loss</Table.Cell>
+          <Table.Cell>
+            {isTrained ? (
+              finalTrainSetLoss
+            ) : (
+              <Loader active inline size='mini' />
+            )}
+          </Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Final validation-set loss</Table.Cell>
+          <Table.Cell>
+            {isTrained ? (
+              finalValidationSetLoss
+            ) : (
+              <Loader active inline size='mini' />
+            )}
+          </Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Test-set loss</Table.Cell>
+          <Table.Cell>
+            {isTrained ? testSetLoss : <Loader active inline size='mini' />}
+          </Table.Cell>
+        </Table.Row>
+      </Table.Body>
+    </Table>
+  )
+}

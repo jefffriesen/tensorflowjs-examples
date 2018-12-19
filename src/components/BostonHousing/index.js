@@ -4,7 +4,11 @@ import { observer, inject } from 'mobx-react'
 import { Grid, Button, Header, Segment } from 'semantic-ui-react'
 import LossChart from './LossChart'
 import { PrimaryHeader } from '../Elements/Header'
-import { WeightsMagnitudeTable, ModelParametersTable } from './tables'
+import {
+  WeightsMagnitudeTable,
+  ModelParametersTable,
+  FinalLossTable
+} from './tables'
 
 class BostonHousing extends Component {
   trainLinearRegressor = () => {
@@ -96,12 +100,14 @@ class BostonHousing extends Component {
              * Linear Regression
              */}
             <Grid.Column>
+              <LossChartWrapper
+                modelName={'linear'}
+                trainingState={trainingState}
+                NUM_EPOCHS={NUM_EPOCHS}
+                currentEpoch={currentEpoch}
+              />
               {!_.isEmpty(weightsListLinearSorted) && (
                 <div>
-                  <LossChart modelName='linear' />
-                  <h4>
-                    Epoch {currentEpoch['linear'] + 1} of {NUM_EPOCHS} completed
-                  </h4>
                   <h4>Weights by absolute magnitude</h4>
                   <WeightsMagnitudeTable weights={weightsListLinearSorted} />
                 </div>
@@ -169,3 +175,29 @@ class BostonHousing extends Component {
 }
 
 export default inject('bostonStore')(observer(BostonHousing))
+
+const LossChartWrapper = inject('bostonStore')(
+  observer(props => {
+    const { bostonStore, modelName } = props
+    const { NUM_EPOCHS } = bostonStore
+    const trainingState = bostonStore.trainingState[modelName]
+    const currentEpoch = bostonStore.currentEpoch[modelName]
+    if (trainingState === 'None') {
+      return null
+    }
+    return (
+      <div>
+        <LossChart modelName='linear' />
+        <h4>
+          Epoch {currentEpoch + 1} of {NUM_EPOCHS} completed
+        </h4>
+        <FinalLossTable
+          isTrained={trainingState === 'Trained'}
+          finalTrainSetLoss={bostonStore.finalTrainSetLoss[modelName]}
+          finalValidationSetLoss={bostonStore.finalValidationSetLoss[modelName]}
+          testSetLoss={bostonStore.testSetLoss[modelName]}
+        />
+      </div>
+    )
+  })
+)

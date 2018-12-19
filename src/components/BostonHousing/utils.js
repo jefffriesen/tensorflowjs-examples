@@ -31,7 +31,6 @@ export function multiLayerPerceptronRegressionModel1Hidden(numFeatures) {
     })
   )
   model.add(tf.layers.dense({ units: 1 }))
-
   model.summary()
   return model
 }
@@ -63,6 +62,22 @@ export function multiLayerPerceptronRegressionModel2Hidden(numFeatures) {
 
   model.summary()
   return model
+}
+
+export function calculateTestSetLoss(model, tensors, BATCH_SIZE) {
+  const testSetLoss = model.evaluate(tensors.testFeatures, tensors.testTarget, {
+    batchSize: BATCH_SIZE
+  })
+  return _.round(testSetLoss.dataSync()[0])
+}
+
+export function calculateFinalLoss(trainingLogs, model, BATCH_SIZE) {
+  const finalTrainSetLoss = trainingLogs[trainingLogs.length - 1].loss
+  const finalValidationSetLoss = trainingLogs[trainingLogs.length - 1].val_loss
+  return {
+    finalTrainSetLoss: _.round(finalTrainSetLoss, 2),
+    finalValidationSetLoss: _.round(finalValidationSetLoss, 2)
+  }
 }
 
 /**

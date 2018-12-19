@@ -18,7 +18,7 @@ const LossChart = ({ bostonStore, modelName }) => {
       <LineChart
         key={Math.random()} // Force rerendering every time the data changes
         data={linearRegressionData}
-        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+        margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
         <XAxis
           dataKey='epoch'
           label={{
