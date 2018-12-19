@@ -15,7 +15,8 @@ import {
   shuffle,
   linearRegressionModel,
   describeKernelElements,
-  computeBaseline,
+  computeBaselineLoss,
+  computeAveragePrice,
   multiLayerPerceptronRegressionModel1Hidden,
   multiLayerPerceptronRegressionModel2Hidden,
   calculateFinalLoss,
@@ -100,8 +101,12 @@ class BostonStore {
       .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
   }
 
+  get averagePrice() {
+    return this.bostonDataIsLoading ? null : computeAveragePrice(this.tensors)
+  }
+
   get baselineLoss() {
-    return this.bostonDataIsLoading ? 0 : computeBaseline(this.tensors)
+    return this.bostonDataIsLoading ? null : computeBaselineLoss(this.tensors)
   }
 
   get readyToModel() {
@@ -266,6 +271,7 @@ decorate(BostonStore, {
   finalValidationSetLoss: observable,
   testSetLoss: observable,
   weightsListLinearSorted: computed,
+  averagePrice: computed,
   baselineLoss: computed,
   readyToModel: computed
 })

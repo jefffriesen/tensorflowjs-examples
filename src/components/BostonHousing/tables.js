@@ -28,6 +28,7 @@ export const ModelParametersTable = ({
   BATCH_SIZE,
   LEARNING_RATE,
   numFeatures,
+  averagePrice,
   baselineLoss
 }) => {
   return (
@@ -38,6 +39,7 @@ export const ModelParametersTable = ({
           <Table.Cell>Batch Size</Table.Cell>
           <Table.Cell>Learning Rate</Table.Cell>
           <Table.Cell>Number of Features</Table.Cell>
+          <Table.Cell>Average Home Price</Table.Cell>
           <Table.Cell>Baseline Loss (meanSquaredError)</Table.Cell>
         </Table.Row>
         <Table.Row>
@@ -56,6 +58,9 @@ export const ModelParametersTable = ({
           </Table.Cell>
           <Table.Cell>
             {numFeatures ? numFeatures : <Loader active inline size='mini' />}
+          </Table.Cell>
+          <Table.Cell>
+            {averagePrice ? averagePrice : <Loader active inline size='mini' />}
           </Table.Cell>
           <Table.Cell>
             {baselineLoss ? baselineLoss : <Loader active inline size='mini' />}

@@ -127,12 +127,14 @@ export function describeKernelElements(kernel, featureDescriptions) {
   })
 }
 
-export function computeBaseline(tensors) {
-  const avgPrice = tf.mean(tensors.trainTarget)
-  const baseline = tf.mean(tf.pow(tf.sub(tensors.testTarget, avgPrice), 2))
-  console.log(`Average price: ${avgPrice.dataSync()}`)
-  console.log(`Baseline loss: ${baseline.dataSync()}`)
-  return baseline.dataSync()[0].toFixed(2)
+export function computeAveragePrice(tensors) {
+  return _.round(tf.mean(tensors.trainTarget).dataSync()[0], 2)
+}
+
+export function computeBaselineLoss(tensors) {
+  const averagePrice = tf.mean(tensors.trainTarget)
+  const baseline = tf.mean(tf.pow(tf.sub(tensors.testTarget, averagePrice), 2))
+  return _.round(baseline.dataSync()[0])
 }
 
 /**

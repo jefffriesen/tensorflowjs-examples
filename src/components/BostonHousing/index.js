@@ -35,6 +35,7 @@ class BostonHousing extends Component {
       BATCH_SIZE,
       LEARNING_RATE,
       numFeatures,
+      averagePrice,
       baselineLoss,
       weightsListLinearSorted,
       readyToModel
@@ -89,6 +90,7 @@ class BostonHousing extends Component {
                   BATCH_SIZE={BATCH_SIZE}
                   LEARNING_RATE={LEARNING_RATE}
                   numFeatures={numFeatures}
+                  averagePrice={averagePrice}
                   baselineLoss={baselineLoss}
                 />
               </Segment>
@@ -186,7 +188,7 @@ const LossChartWrapper = inject('bostonStore')(
       return null
     }
     return (
-      <div>
+      <div style={{ marginBottom: 20 }}>
         <LossChart modelName='linear' />
         <h4>
           Epoch {currentEpoch + 1} of {NUM_EPOCHS} completed
