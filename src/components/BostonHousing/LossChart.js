@@ -12,7 +12,7 @@ import {
 import { inject, observer } from 'mobx-react'
 
 const LossChart = ({ bostonStore, modelName }) => {
-  const linearRegressionData = bostonStore.trainingLogs[modelName]
+  const linearRegressionData = bostonStore.trainLogs[modelName]
   return (
     <ResponsiveContainer height={300}>
       <LineChart

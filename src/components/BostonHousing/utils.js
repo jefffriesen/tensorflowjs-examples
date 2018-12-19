@@ -71,9 +71,9 @@ export function calculateTestSetLoss(model, tensors, BATCH_SIZE) {
   return _.round(testSetLoss.dataSync()[0])
 }
 
-export function calculateFinalLoss(trainingLogs, model, BATCH_SIZE) {
-  const finalTrainSetLoss = trainingLogs[trainingLogs.length - 1].loss
-  const finalValidationSetLoss = trainingLogs[trainingLogs.length - 1].val_loss
+export function calculateFinalLoss(trainLogs, model, BATCH_SIZE) {
+  const finalTrainSetLoss = trainLogs[trainLogs.length - 1].loss
+  const finalValidationSetLoss = trainLogs[trainLogs.length - 1].val_loss
   return {
     finalTrainSetLoss: _.round(finalTrainSetLoss, 2),
     finalValidationSetLoss: _.round(finalValidationSetLoss, 2)

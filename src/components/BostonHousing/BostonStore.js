@@ -71,7 +71,7 @@ class BostonStore {
     oneHidden: 'None',
     twoHidden: 'None'
   }
-  trainingLogs = {
+  trainLogs = {
     linear: [],
     oneHidden: [],
     twoHidden: []
@@ -180,7 +180,7 @@ class BostonStore {
         onEpochEnd: async (epoch, logs) => {
           runInAction(() => {
             this.currentEpoch[modelName] = epoch
-            this.trainingLogs[modelName].push({ epoch, ...logs })
+            this.trainLogs[modelName].push({ epoch, ...logs })
           })
           if (weightsIllustration) {
             model.layers[0]
@@ -205,7 +205,7 @@ class BostonStore {
           const {
             finalTrainSetLoss,
             finalValidationSetLoss
-          } = calculateFinalLoss(this.trainingLogs[modelName])
+          } = calculateFinalLoss(this.trainLogs[modelName])
           runInAction(() => {
             this.testSetLoss[modelName] = testSetLoss
             this.finalTrainSetLoss[modelName] = finalTrainSetLoss
@@ -265,7 +265,7 @@ decorate(BostonStore, {
   bostonDataIsLoading: observable,
   currentEpoch: observable,
   trainingState: observable,
-  trainingLogs: observable,
+  trainLogs: observable,
   weightsList: observable,
   finalTrainSetLoss: observable,
   finalValidationSetLoss: observable,

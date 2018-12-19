@@ -14,9 +14,7 @@ TODO:
 https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing
 
 TODO:
-* Break out chart and loss table into it's own component (weights can be separate)
 * Make NUM_EPOCHS, BATCH_SIZE, etc editable
-* Rename trainingLogs to trainLogs like the example
 * What is the final result of the training? Compare with Baseline?
   * Final train-set loss: 19.5457
   * Final validation-set loss: 13.0691
