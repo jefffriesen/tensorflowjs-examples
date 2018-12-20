@@ -13,7 +13,7 @@ import {
   getHomerStats,
   getSummaryStats,
   calculateNewLoads
-} from '../../utils/homerHelpers'
+} from './homerUtils'
 import { homerFiles, applianceFiles } from '../../utils/fileInfo'
 import { fieldDefinitions } from '../../utils/fieldDefinitions'
 

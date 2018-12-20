@@ -58,7 +58,8 @@ export const plottablePredictionsFn = (trainingData, preds) => {
   const vals = Array.from(yvals).map((y, i) => {
     return { x: _.round(xvals[i], 3), y: _.round(predVals[i], 3) }
   })
-  // If connecting dots by a line, they need to be sorted by x
+  // If connecting dots by a line, which is nice for predictions,
+  // they need to be sorted by x
   return _.sortBy(vals, ['x'])
 }
 
