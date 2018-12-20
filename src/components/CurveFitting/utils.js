@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs'
+import _ from 'lodash'
 
 // y = a * x ^ 3 + b * x ^ 2 + c * x + d
 export const predict = (x, { a, b, c, d }) => {
@@ -43,9 +44,10 @@ export const plottableTrainingDataFn = trainingData => {
   const { xs, ys } = trainingData
   const xvals = xs.dataSync()
   const yvals = ys.dataSync()
-  return Array.from(yvals).map((y, i) => {
-    return { x: xvals[i], y: yvals[i] }
+  const vals = Array.from(yvals).map((y, i) => {
+    return { x: _.round(xvals[i], 3), y: _.round(yvals[i], 3) }
   })
+  return _.sortBy(vals, ['x'])
 }
 
 export const plottablePredictionsFn = (trainingData, preds) => {
@@ -53,9 +55,11 @@ export const plottablePredictionsFn = (trainingData, preds) => {
   const xvals = xs.dataSync()
   const yvals = ys.dataSync()
   const predVals = preds.dataSync()
-  return Array.from(yvals).map((y, i) => {
-    return { x: xvals[i], y: predVals[i] }
+  const vals = Array.from(yvals).map((y, i) => {
+    return { x: _.round(xvals[i], 3), y: _.round(predVals[i], 3) }
   })
+  // If connecting dots by a line, they need to be sorted by x
+  return _.sortBy(vals, ['x'])
 }
 
 /**

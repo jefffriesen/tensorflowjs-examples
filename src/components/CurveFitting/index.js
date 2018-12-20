@@ -178,6 +178,7 @@ const PredictionChart = ({
               name={predictionLegend}
               data={plottablePredictions}
               fill='#FF6346'
+              line
               shape={<Dot r={2} />}
             />
           )}
