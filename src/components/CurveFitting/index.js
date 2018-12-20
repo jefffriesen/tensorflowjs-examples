@@ -10,7 +10,8 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Dot
 } from 'recharts'
 
 class CurveFitting extends Component {
@@ -170,12 +171,14 @@ const PredictionChart = ({
             name='Training data'
             data={plottableTrainingData}
             fill='#83A1C3'
+            shape={<Dot r={2} />}
           />
           {plottablePredictions && (
             <Scatter
               name={predictionLegend}
               data={plottablePredictions}
               fill='#FF6346'
+              shape={<Dot r={2} />}
             />
           )}
         </ScatterChart>

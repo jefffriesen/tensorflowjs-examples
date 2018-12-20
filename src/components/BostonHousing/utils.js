@@ -59,7 +59,6 @@ export function multiLayerPerceptronRegressionModel2Hidden(numFeatures) {
     })
   )
   model.add(tf.layers.dense({ units: 1 }))
-
   model.summary()
   return model
 }
