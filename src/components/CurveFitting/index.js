@@ -179,7 +179,7 @@ const PredictionChart = ({
               data={plottablePredictions}
               fill='#FF6346'
               line
-              shape={<Dot r={2} />}
+              shape={<Dot r={0} />}
             />
           )}
         </ScatterChart>
