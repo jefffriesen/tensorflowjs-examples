@@ -9,14 +9,14 @@ TODO:
 * Run multiple versions with different number of iterations. Or make it adjustable
 * Put tensorflow comments back into the utils file
 * Delete old utils file
+* Make charts match each other
 
 
 ## 2. Boston Housing Price Prediction
 https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing
 
 TODO:
-* Shuffle data when loading (make it a functional function)
-
+* Show number of epochs, learning rate, batch size, number of features in a table
 
 
 ## 3. HOMER Battery State of Charge Curve Fitting

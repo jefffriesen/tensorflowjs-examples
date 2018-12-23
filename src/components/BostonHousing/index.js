@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 import { observer, inject } from 'mobx-react'
-import { Grid, Button, Table, Header, Segment } from 'semantic-ui-react'
+import { Grid, Button, Header, Segment } from 'semantic-ui-react'
 import LossChart from './LossChart'
 import { PrimaryHeader } from '../Elements/Header'
+import { WeightsMagnitudeTable, ModelParametersTable } from './tables'
 
 class BostonHousing extends Component {
   trainLinearRegressor = () => {
@@ -25,6 +26,10 @@ class BostonHousing extends Component {
       currentEpoch,
       baseline,
       NUM_EPOCHS,
+      BATCH_SIZE,
+      LEARNING_RATE,
+      numFeatures,
+      baselineLoss,
       weightsListLinearSorted
     } = this.props.bostonStore
     return (
@@ -57,9 +62,9 @@ class BostonHousing extends Component {
                 <p>
                   It allows you to compare the perfomance of 3 different models
                   for predicting the house prices. When training the linear
-                  model, it will also display the largest 5 weights (by absolute
-                  value) of the model and the feature associated with each of
-                  those weights.
+                  model, it will also display the weights (by absolute value) of
+                  the model and the feature associated with each of those
+                  weights.
                 </p>
               </Segment>
               <PrimaryHeader>Status</PrimaryHeader>
@@ -68,11 +73,17 @@ class BostonHousing extends Component {
                   <p>Data is loading...</p>
                 ) : (
                   <p>
-                    Data is now available as tensors. <br />
-                    Click a train button to begin.
+                    Data is now available as tensors.{' '}
+                    <strong>Click a train button to begin.</strong>
                   </p>
                 )}
-                <p>Baseline loss (meanSquaredError) is {baseline}</p>
+                <ModelParametersTable
+                  NUM_EPOCHS={NUM_EPOCHS}
+                  BATCH_SIZE={BATCH_SIZE}
+                  LEARNING_RATE={LEARNING_RATE}
+                  numFeatures={numFeatures}
+                  baselineLoss={baselineLoss}
+                />
               </Segment>
               <PrimaryHeader>Training Progress</PrimaryHeader>
             </Grid.Column>
@@ -90,7 +101,11 @@ class BostonHousing extends Component {
                   <WeightsMagnitudeTable weights={weightsListLinearSorted} />
                 </div>
               )}
-              <Button fluid color='orange' onClick={this.trainLinearRegressor}>
+              <Button
+                fluid
+                color='orange'
+                disabled={bostonDataIsLoading}
+                onClick={this.trainLinearRegressor}>
                 Train Linear Regressor
               </Button>
             </Grid.Column>
@@ -119,24 +134,3 @@ class BostonHousing extends Component {
 }
 
 export default inject('bostonStore')(observer(BostonHousing))
-
-const WeightsMagnitudeTable = ({ weights }) => {
-  return (
-    <Table basic='very' compact='very'>
-      <Table.Body>
-        {_.map(weights, ({ description, value }) => {
-          return (
-            <Table.Row key={description}>
-              <Table.Cell>{description}</Table.Cell>
-              <Table.Cell textAlign='right'>
-                <Header as='h5' color={value > 0 ? 'green' : 'red'}>
-                  {value}
-                </Header>
-              </Table.Cell>
-            </Table.Row>
-          )
-        })}
-      </Table.Body>
-    </Table>
-  )
-}
