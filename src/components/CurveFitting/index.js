@@ -10,7 +10,8 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Dot
 } from 'recharts'
 
 class CurveFitting extends Component {
@@ -30,7 +31,7 @@ class CurveFitting extends Component {
         <Grid columns='equal' padded>
           <Grid.Row>
             <Grid.Column>
-              <h3>TensorFlow.js: Fitting a curve to synthetic data</h3>
+              <h1>TensorFlow.js: Fitting a curve to synthetic data</h1>
               <p>
                 Given some data generated using a polynomial function with some
                 noise added, we'll train a model to discover the coefficients
@@ -47,9 +48,10 @@ class CurveFitting extends Component {
                   Repo
                 </a>
               </p>
-              <h4>
-                Polynomial: ax<sup>3</sup> + bx<sup>2</sup> + cx + d
-              </h4>
+              <h4>Polynomial:</h4>
+              <p>
+                ax<sup>3</sup> + bx<sup>2</sup> + cx + d
+              </p>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
@@ -102,7 +104,7 @@ export default inject('curveStore')(observer(CurveFitting))
 const ChartTitle = ({ title, coeffTitle, coeff }) => {
   return (
     <div>
-      <Header as='h3'>{title}</Header>
+      <Header as='h4'>{title}</Header>
       <Grid>
         <Grid.Row>
           <Grid.Column width={4}>{coeffTitle}: </Grid.Column>
@@ -125,11 +127,11 @@ const CoefficientsTable = ({ coeff }) => {
     <Table compact='very' celled size='small' basic='very'>
       <Table.Body>
         <Table.Row>
-          <Table.HeaderCell>a</Table.HeaderCell>
-          <Table.HeaderCell>b</Table.HeaderCell>
-          <Table.HeaderCell>c</Table.HeaderCell>
-          <Table.HeaderCell>d</Table.HeaderCell>
-          <Table.HeaderCell>polynomial</Table.HeaderCell>
+          <Table.Cell>a</Table.Cell>
+          <Table.Cell>b</Table.Cell>
+          <Table.Cell>c</Table.Cell>
+          <Table.Cell>d</Table.Cell>
+          <Table.Cell>polynomial</Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell>{a}</Table.Cell>
@@ -169,12 +171,15 @@ const PredictionChart = ({
             name='Training data'
             data={plottableTrainingData}
             fill='#83A1C3'
+            shape={<Dot r={2} />}
           />
           {plottablePredictions && (
             <Scatter
               name={predictionLegend}
               data={plottablePredictions}
               fill='#FF6346'
+              line
+              shape={<Dot r={0} />}
             />
           )}
         </ScatterChart>

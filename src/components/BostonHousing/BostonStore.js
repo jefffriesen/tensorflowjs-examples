@@ -15,7 +15,12 @@ import {
   shuffle,
   linearRegressionModel,
   describeKernelElements,
-  computeBaseline
+  computeBaselineLoss,
+  computeAveragePrice,
+  multiLayerPerceptronRegressionModel1Hidden,
+  multiLayerPerceptronRegressionModel2Hidden,
+  calculateFinalLoss,
+  calculateTestSetLoss
 } from './utils'
 configure({ enforceActions: 'observed' })
 
@@ -57,16 +62,37 @@ class BostonStore {
   numFeatures = null
   bostonDataIsLoading = true
   currentEpoch = {
-    linear: 0
+    linear: 0,
+    oneHidden: 0,
+    twoHidden: 0
   }
   trainingState = {
-    linear: 'None'
+    linear: 'None',
+    oneHidden: 'None',
+    twoHidden: 'None'
   }
-  trainingLogs = {
-    linear: []
+  trainLogs = {
+    linear: [],
+    oneHidden: [],
+    twoHidden: []
   }
   weightsList = {
     linear: []
+  }
+  finalTrainSetLoss = {
+    linear: null,
+    oneHidden: null,
+    twoHidden: null
+  }
+  finalValidationSetLoss = {
+    linear: null,
+    oneHidden: null,
+    twoHidden: null
+  }
+  testSetLoss = {
+    linear: null,
+    oneHidden: null,
+    twoHidden: null
   }
 
   get weightsListLinearSorted() {
@@ -75,8 +101,16 @@ class BostonStore {
       .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
   }
 
+  get averagePrice() {
+    return this.bostonDataIsLoading ? null : computeAveragePrice(this.tensors)
+  }
+
   get baselineLoss() {
-    return this.bostonDataIsLoading ? 0 : computeBaseline(this.tensors)
+    return this.bostonDataIsLoading ? null : computeBaselineLoss(this.tensors)
+  }
+
+  get readyToModel() {
+    return !this.bostonDataIsLoading && Boolean(this.numFeatures)
   }
 
   async trainLinearRegressor() {
@@ -86,6 +120,32 @@ class BostonStore {
       tensors: this.tensors,
       modelName: 'linear',
       weightsIllustration: true,
+      LEARNING_RATE: this.LEARNING_RATE,
+      BATCH_SIZE: this.BATCH_SIZE,
+      NUM_EPOCHS: this.NUM_EPOCHS
+    })
+  }
+
+  async trainNeuralNetworkLinearRegression1Hidden() {
+    const model = multiLayerPerceptronRegressionModel1Hidden(this.numFeatures)
+    await this.run({
+      model,
+      tensors: this.tensors,
+      modelName: 'oneHidden',
+      weightsIllustration: false,
+      LEARNING_RATE: this.LEARNING_RATE,
+      BATCH_SIZE: this.BATCH_SIZE,
+      NUM_EPOCHS: this.NUM_EPOCHS
+    })
+  }
+
+  async trainNeuralNetworkLinearRegression2Hidden() {
+    const model = multiLayerPerceptronRegressionModel2Hidden(this.numFeatures)
+    await this.run({
+      model,
+      tensors: this.tensors,
+      modelName: 'twoHidden',
+      weightsIllustration: false,
       LEARNING_RATE: this.LEARNING_RATE,
       BATCH_SIZE: this.BATCH_SIZE,
       NUM_EPOCHS: this.NUM_EPOCHS
@@ -120,7 +180,7 @@ class BostonStore {
         onEpochEnd: async (epoch, logs) => {
           runInAction(() => {
             this.currentEpoch[modelName] = epoch
-            this.trainingLogs[modelName].push({ epoch, ...logs })
+            this.trainLogs[modelName].push({ epoch, ...logs })
           })
           if (weightsIllustration) {
             model.layers[0]
@@ -137,7 +197,19 @@ class BostonStore {
           }
         },
         onTrainEnd: () => {
+          const testSetLoss = calculateTestSetLoss(
+            model,
+            tensors,
+            this.BATCH_SIZE
+          )
+          const {
+            finalTrainSetLoss,
+            finalValidationSetLoss
+          } = calculateFinalLoss(this.trainLogs[modelName])
           runInAction(() => {
+            this.testSetLoss[modelName] = testSetLoss
+            this.finalTrainSetLoss[modelName] = finalTrainSetLoss
+            this.finalValidationSetLoss[modelName] = finalValidationSetLoss
             this.trainingState[modelName] = 'Trained'
           })
         }
@@ -193,10 +265,15 @@ decorate(BostonStore, {
   bostonDataIsLoading: observable,
   currentEpoch: observable,
   trainingState: observable,
-  trainingLogs: observable,
+  trainLogs: observable,
   weightsList: observable,
+  finalTrainSetLoss: observable,
+  finalValidationSetLoss: observable,
+  testSetLoss: observable,
   weightsListLinearSorted: computed,
-  baselineLoss: computed
+  averagePrice: computed,
+  baselineLoss: computed,
+  readyToModel: computed
 })
 
 export default BostonStore

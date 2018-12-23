@@ -3,7 +3,6 @@ https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-co
 
 
 TODO:
-* Show number of iterations and learning rate
 * Make dots smaller
 * Make predictions a line instead of dots
 * Run multiple versions with different number of iterations. Or make it adjustable
@@ -16,7 +15,8 @@ TODO:
 https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing
 
 TODO:
-* Show number of epochs, learning rate, batch size, number of features in a table
+* Make NUM_EPOCHS, BATCH_SIZE, etc editable
+* Show example of trained model (you would have to save in the datastore)
 
 
 ## 3. HOMER Battery State of Charge Curve Fitting

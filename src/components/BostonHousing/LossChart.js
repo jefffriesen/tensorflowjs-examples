@@ -12,13 +12,13 @@ import {
 import { inject, observer } from 'mobx-react'
 
 const LossChart = ({ bostonStore, modelName }) => {
-  const linearRegressionData = bostonStore.trainingLogs[modelName]
+  const linearRegressionData = bostonStore.trainLogs[modelName]
   return (
     <ResponsiveContainer height={300}>
       <LineChart
         key={Math.random()} // Force rerendering every time the data changes
         data={linearRegressionData}
-        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+        margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
         <XAxis
           dataKey='epoch'
           label={{

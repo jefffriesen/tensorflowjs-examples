@@ -15,6 +15,71 @@ export function linearRegressionModel(numFeatures) {
 }
 
 /**
+ * Builds and returns Multi Layer Perceptron Regression Model
+ * with 1 hidden layers, each with 10 units activated by sigmoid.
+ *
+ * @returns {tf.Sequential} The multi layer perceptron regression model.
+ */
+export function multiLayerPerceptronRegressionModel1Hidden(numFeatures) {
+  const model = tf.sequential()
+  model.add(
+    tf.layers.dense({
+      inputShape: [numFeatures],
+      units: 50,
+      activation: 'sigmoid',
+      kernelInitializer: 'leCunNormal'
+    })
+  )
+  model.add(tf.layers.dense({ units: 1 }))
+  model.summary()
+  return model
+}
+
+/**
+ * Builds and returns Multi Layer Perceptron Regression Model
+ * with 2 hidden layers, each with 10 units activated by sigmoid.
+ *
+ * @returns {tf.Sequential} The multi layer perceptron regression mode  l.
+ */
+export function multiLayerPerceptronRegressionModel2Hidden(numFeatures) {
+  const model = tf.sequential()
+  model.add(
+    tf.layers.dense({
+      inputShape: [numFeatures],
+      units: 50,
+      activation: 'sigmoid',
+      kernelInitializer: 'leCunNormal'
+    })
+  )
+  model.add(
+    tf.layers.dense({
+      units: 50,
+      activation: 'sigmoid',
+      kernelInitializer: 'leCunNormal'
+    })
+  )
+  model.add(tf.layers.dense({ units: 1 }))
+  model.summary()
+  return model
+}
+
+export function calculateTestSetLoss(model, tensors, BATCH_SIZE) {
+  const testSetLoss = model.evaluate(tensors.testFeatures, tensors.testTarget, {
+    batchSize: BATCH_SIZE
+  })
+  return _.round(testSetLoss.dataSync()[0])
+}
+
+export function calculateFinalLoss(trainLogs, model, BATCH_SIZE) {
+  const finalTrainSetLoss = trainLogs[trainLogs.length - 1].loss
+  const finalValidationSetLoss = trainLogs[trainLogs.length - 1].val_loss
+  return {
+    finalTrainSetLoss: _.round(finalTrainSetLoss, 2),
+    finalValidationSetLoss: _.round(finalValidationSetLoss, 2)
+  }
+}
+
+/**
  * Convert loaded data into tensors and creates normalized versions of the features.
  * @param {*} data
  */
@@ -61,12 +126,14 @@ export function describeKernelElements(kernel, featureDescriptions) {
   })
 }
 
-export function computeBaseline(tensors) {
-  const avgPrice = tf.mean(tensors.trainTarget)
-  const baseline = tf.mean(tf.pow(tf.sub(tensors.testTarget, avgPrice), 2))
-  console.log(`Average price: ${avgPrice.dataSync()}`)
-  console.log(`Baseline loss: ${baseline.dataSync()}`)
-  return baseline.dataSync()[0].toFixed(2)
+export function computeAveragePrice(tensors) {
+  return _.round(tf.mean(tensors.trainTarget).dataSync()[0], 2)
+}
+
+export function computeBaselineLoss(tensors) {
+  const averagePrice = tf.mean(tensors.trainTarget)
+  const baseline = tf.mean(tf.pow(tf.sub(tensors.testTarget, averagePrice), 2))
+  return _.round(baseline.dataSync()[0])
 }
 
 /**
