@@ -24,7 +24,7 @@ configure({ enforceActions: 'observed' })
  */
 
 /**
- * Imperative, mutaty tensorflow code translation:
+ * Imperative tensorflow code translation:
  * 1. Create polynomial with known coefficients
  * 2. Create random coefficients to the polynomial as mutable tf *variables*
  * 3. Build predict and loss functions

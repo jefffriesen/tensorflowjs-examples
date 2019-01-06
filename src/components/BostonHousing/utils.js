@@ -172,7 +172,7 @@ export function normalizeTensor(data, dataMean, dataStd) {
 /**
  * Shuffles data and target (maintaining alignment) using Fisher-Yates
  * algorithm
- * The original function mutate the data in place.
+ * The original function mutates the data in place.
  * I've converted it to return a value. Needs a test
  * Pass in array of arrays
  */
