@@ -2,9 +2,11 @@
 
 The [tensorflowjs examples](https://github.com/tensorflow/tfjs-examples) are a really great resource - [thank you](https://github.com/tensorflow/tfjs-examples/graphs/contributors)!
 
-For my own use, I would prefer to make state and mutations to it more explicit. I used Mobx for the store, but Redux or appollo-link-state and others could be used. React makes view updates nicer (IMO).
+For my own use, I would prefer to make state and it's mutations more explicit. I used Mobx for the store, but Redux or apollo-link-state or others could be used. React makes view updates nicer (IMO).
 
 So to understand the how tensorflowjs worked before using them in my own apps, I rewrote a couple of the examples.
+
+Feel free to PR bugs or any additional ports of tensorflowjs examples: https://github.com/tensorflow/tfjs-examples
 
 ## 1. Fitting a curve to synthetic data
 https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core
@@ -14,9 +16,6 @@ https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-co
 https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing
 ![Multivariate regression with Tensorflowjs and React](/screenshots/multivariate_regression.png?raw=true)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-
 TODO:
 * Make NUM_EPOCHS, BATCH_SIZE, etc editable
 * Show example of trained model (you would have to save in the datastore)
@@ -25,6 +24,8 @@ TODO:
 ## 3. MNIST
 * Refer to https://beta.observablehq.com/@mbostock/lets-try-t-sne
 
+-------------------------------------------
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
