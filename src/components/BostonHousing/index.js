@@ -46,17 +46,17 @@ class BostonHousing extends Component {
           <Grid.Row>
             <Grid.Column>
               <Segment basic>
-                <Header as='h1'>Multivariate Regression</Header>
-                <Header as='h3'>
-                  Compare different models for housing price prediction.
-                </Header>
-                <p>
-                  Recreation of the{' '}
+                <h1>Multivariate Regression</h1>
+                <h2>Compare different models for housing price prediction.</h2>
+                <h4>
+                  A recreation of the{' '}
                   <a href='https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing'>
                     Boston Housing data example
                   </a>{' '}
-                  using React and Recharts (instead of tfjs-vis).
-                </p>
+                  using a slightly more functional approach to Tensorflow.js
+                  training and inference. Views in React and Recharts (instead
+                  of tfjs-vis).
+                </h4>
               </Segment>
               <PrimaryHeader>Description</PrimaryHeader>
               <Segment basic>

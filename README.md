@@ -3,12 +3,11 @@ https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-co
 
 
 TODO:
-* Make dots smaller
-* Make predictions a line instead of dots
 * Run multiple versions with different number of iterations. Or make it adjustable
 * Put tensorflow comments back into the utils file
 * Delete old utils file
 * Make charts match each other
+* Update page titles
 
 
 ## 2. Boston Housing Price Prediction
@@ -19,7 +18,8 @@ TODO:
 * Show example of trained model (you would have to save in the datastore)
 
 
-## 3. HOMER Battery State of Charge Curve Fitting
+## 3. MNIST
+* Refer to https://beta.observablehq.com/@mbostock/lets-try-t-sne
 
 
 

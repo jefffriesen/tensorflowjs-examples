@@ -1,7 +1,9 @@
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
-import { Grid, Loader, Header, Table } from 'semantic-ui-react'
+import { Grid, Loader, Header, Table, Segment } from 'semantic-ui-react'
+import { PrimaryHeader } from '../Elements/Header'
+
 import {
   ScatterChart,
   Scatter,
@@ -25,72 +27,98 @@ class CurveFitting extends Component {
       seedCoefficientVals,
       trueCoefficientVals
     } = this.props.curveStore
-
     return (
       <div>
         <Grid columns='equal' padded>
           <Grid.Row>
             <Grid.Column>
-              <h1>TensorFlow.js: Fitting a curve to synthetic data</h1>
-              <p>
-                Given some data generated using a polynomial function with some
-                noise added, we'll train a model to discover the coefficients
-                used to generate the data.{' '}
-                <a href='https://storage.googleapis.com/tfjs-examples/polynomial-regression-core/dist/index.html'>
-                  Demo
-                </a>
-                {', '}
-                <a href='https://js.tensorflow.org/tutorials/fit-curve.html'>
-                  Tutorial
-                </a>
-                {', '}
-                <a href='https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core'>
-                  Repo
-                </a>
-              </p>
-              <h4>Polynomial:</h4>
-              <p>
-                ax<sup>3</sup> + bx<sup>2</sup> + cx + d
-              </p>
+              <Segment basic>
+                <h1>TensorFlow.js: Fitting a curve to synthetic data</h1>
+                <h2>
+                  Train a model to learn the coefficients of a cubic function
+                </h2>
+                <h4>
+                  A slightly more functional approach to Tensorflow.js training
+                  and inference. Views in React and Rechanges (instead of
+                  tfjs-vis).
+                </h4>
+              </Segment>
+              <PrimaryHeader>Description</PrimaryHeader>
+              <Segment basic>
+                <p>
+                  This model learns to approximate the coefficients of a cubic
+                  funtion used to generate the points shown below on the left.{' '}
+                  <a href='https://storage.googleapis.com/tfjs-examples/polynomial-regression-core/dist/index.html'>
+                    Demo
+                  </a>
+                  {', '}
+                  <a href='https://js.tensorflow.org/tutorials/fit-curve.html'>
+                    Tutorial
+                  </a>
+                  {', '}
+                  <a href='https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core'>
+                    Repo
+                  </a>
+                </p>
+                <p>
+                  <strong>Polynomial: </strong>
+                  ax<sup>3</sup> + bx<sup>2</sup> + cx + d
+                </p>
+              </Segment>
             </Grid.Column>
+          </Grid.Row>
+          <Grid.Row columns={2}>
+            <Grid.Column>
+              <PrimaryHeader>Input Data</PrimaryHeader>
+              <Segment basic>
+                <ChartTitle
+                  title='Original Data (Synthetic)'
+                  coeffTitle='True coefficients'
+                  coeff={trueCoefficientVals}
+                />
+                <PredictionChart
+                  plottableTrainingData={plottableTrainingData}
+                  isTraining={false}
+                />
+              </Segment>
+            </Grid.Column>
+            <Grid.Column />
           </Grid.Row>
           <Grid.Row>
             <Grid.Column>
-              <ChartTitle
-                title='Original Data (Synthetic)'
-                coeffTitle='True coefficients'
-                coeff={trueCoefficientVals}
-              />
-              <PredictionChart
-                plottableTrainingData={plottableTrainingData}
-                isTraining={false}
-              />
+              <PrimaryHeader>Model Outputs</PrimaryHeader>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row columns={2}>
+            <Grid.Column>
+              <Segment basic>
+                <ChartTitle
+                  title='Fit curve with random coefficients (before training)'
+                  coeffTitle='Seed coefficients'
+                  coeff={seedCoefficientVals}
+                />
+                <PredictionChart
+                  plottableTrainingData={plottableTrainingData}
+                  plottablePredictions={plottablePredictionsBeforeTraining}
+                  predictionLegend='Prediction Before Training'
+                  isTraining={false}
+                />
+              </Segment>
             </Grid.Column>
             <Grid.Column>
-              <ChartTitle
-                title='Fit curve with random coefficients (before training)'
-                coeffTitle='Seed coefficients'
-                coeff={seedCoefficientVals}
-              />
-              <PredictionChart
-                plottableTrainingData={plottableTrainingData}
-                plottablePredictions={plottablePredictionsBeforeTraining}
-                predictionLegend='Prediction Before Training'
-                isTraining={false}
-              />
-            </Grid.Column>
-            <Grid.Column>
-              <ChartTitle
-                title='Fit curve with learned coefficients (after training)'
-                coeffTitle='Learned coefficients'
-                coeff={trainedCoefficientVals}
-              />
-              <PredictionChart
-                plottableTrainingData={plottableTrainingData}
-                plottablePredictions={plottablePredictionsAfterTraining}
-                predictionLegend='Prediction After Training'
-                isTraining={isTraining}
-              />
+              <Segment basic>
+                <ChartTitle
+                  title='Fit curve with learned coefficients (after training)'
+                  coeffTitle='Learned coefficients'
+                  coeff={trainedCoefficientVals}
+                />
+                <PredictionChart
+                  plottableTrainingData={plottableTrainingData}
+                  plottablePredictions={plottablePredictionsAfterTraining}
+                  predictionLegend='Prediction After Training'
+                  isTraining={isTraining}
+                />
+              </Segment>
             </Grid.Column>
           </Grid.Row>
         </Grid>
