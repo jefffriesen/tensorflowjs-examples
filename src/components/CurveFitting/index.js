@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
 import { Grid, Loader, Header, Table, Segment } from 'semantic-ui-react'
 import { PrimaryHeader } from '../Elements/Header'
-
+import { Helmet } from 'react-helmet'
 import {
   ScatterChart,
   Scatter,
@@ -29,6 +29,9 @@ class CurveFitting extends Component {
     } = this.props.curveStore
     return (
       <div>
+        <Helmet>
+          <title>Curve Fitting in Tensorflow.js</title>
+        </Helmet>
         <Grid columns='equal' padded>
           <Grid.Row>
             <Grid.Column>

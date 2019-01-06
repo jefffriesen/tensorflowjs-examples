@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react'
 import { Grid, Button, Header, Segment } from 'semantic-ui-react'
 import LossChart from './LossChart'
 import { PrimaryHeader } from '../Elements/Header'
+import { Helmet } from 'react-helmet'
 import {
   WeightsMagnitudeTable,
   ModelParametersTable,
@@ -42,6 +43,11 @@ class BostonHousing extends Component {
     } = this.props.bostonStore
     return (
       <div>
+        <Helmet>
+          <title>
+            Multivariate Regression in Tensorflow.js (Boston Housing)
+          </title>
+        </Helmet>
         <Grid columns='equal' padded divided>
           <Grid.Row>
             <Grid.Column>

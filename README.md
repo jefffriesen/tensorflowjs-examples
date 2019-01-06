@@ -1,13 +1,10 @@
 ## 1. Fitting a curve to synthetic data
 https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core
 
-
 TODO:
 * Run multiple versions with different number of iterations. Or make it adjustable
 * Put tensorflow comments back into the utils file
-* Delete old utils file
 * Make charts match each other
-* Update page titles
 
 
 ## 2. Boston Housing Price Prediction
