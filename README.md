@@ -2,7 +2,7 @@
 
 The [tensorflowjs examples](https://github.com/tensorflow/tfjs-examples) are a really great resource - [thank you](https://github.com/tensorflow/tfjs-examples/graphs/contributors)!
 
-For my own use, I would prefer to make state and it's mutations more explicit. I used Mobx for the store, but Redux or apollo-link-state or others could be used. React makes view updates nicer (IMO).
+For my own use, I would prefer to make state and it's mutations more explicit. I used Mobx for the store, but Redux, Apollo-link-state or others could be used. React makes view updates nicer (IMO).
 
 So to understand the how tensorflowjs worked before using them in my own apps, I rewrote a couple of the examples.
 
