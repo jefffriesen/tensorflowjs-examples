@@ -20,7 +20,8 @@ import {
   multiLayerPerceptronRegressionModel1Hidden,
   multiLayerPerceptronRegressionModel2Hidden,
   calculateFinalLoss,
-  calculateTestSetLoss
+  calculateTestSetLoss,
+  calculatePlottablePredictedVsActualData
 } from './utils'
 configure({ enforceActions: 'observed' })
 
@@ -58,9 +59,10 @@ class BostonStore {
   NUM_EPOCHS = 50
   BATCH_SIZE = 40
   LEARNING_RATE = 0.01
-  tensors = {}
   numFeatures = null
   bostonDataIsLoading = true
+  trainingData = {}
+  tensors = {}
   currentEpoch = {
     linear: 0,
     oneHidden: 0,
@@ -70,6 +72,11 @@ class BostonStore {
     linear: 'None',
     oneHidden: 'None',
     twoHidden: 'None'
+  }
+  model = {
+    linear: null,
+    oneHidden: null,
+    twoHidden: null
   }
   trainLogs = {
     linear: [],
@@ -90,11 +97,6 @@ class BostonStore {
     twoHidden: null
   }
   testSetLoss = {
-    linear: null,
-    oneHidden: null,
-    twoHidden: null
-  }
-  model = {
     linear: null,
     oneHidden: null,
     twoHidden: null
@@ -212,7 +214,7 @@ class BostonStore {
             finalValidationSetLoss
           } = calculateFinalLoss(this.trainLogs[modelName])
           runInAction(() => {
-            this.model = model
+            this.model[modelName] = model
             this.testSetLoss[modelName] = testSetLoss
             this.finalTrainSetLoss[modelName] = finalTrainSetLoss
             this.finalValidationSetLoss[modelName] = finalValidationSetLoss
@@ -220,6 +222,46 @@ class BostonStore {
           })
         }
       }
+    })
+  }
+
+  get inputTensorShape() {
+    return [1, _.size(featureDescriptions)]
+  }
+
+  get plottablePredictionDataLinear() {
+    return calculatePlottablePredictedVsActualData(
+      this.trainingData,
+      this.model['linear'],
+      this.inputTensorShape
+    )
+  }
+
+  get plottablePredictionData1Hidden() {
+    return calculatePlottablePredictedVsActualData(
+      this.trainingData,
+      this.model['oneHidden'],
+      this.inputTensorShape
+    )
+  }
+
+  get plottablePredictionData2Hidden() {
+    return calculatePlottablePredictedVsActualData(
+      this.trainingData,
+      this.model['twoHidden'],
+      this.inputTensorShape
+    )
+  }
+
+  get plottableReferenceLine() {
+    if (_.isEmpty(this.trainingData)) {
+      return []
+    }
+    const {trainTarget, testTarget} = this.trainingData
+    const allTargets = trainTarget.concat(testTarget)
+    const range = _.range( _.round(_.min(allTargets), _.max(allTargets)))
+    return _.map(range, val => {
+      return { actual: val, predicted: val }
     })
   }
 
@@ -257,6 +299,12 @@ class BostonStore {
     )
     runInAction(() => {
       this.numFeatures = numFeatures
+      this.trainingData = {
+        trainFeatures: shuffledTrainFeatures,
+        testFeatures: shuffledTestFeatures,
+        trainTarget: shuffledTrainTarget,
+        testTarget: shuffledTestTarget
+      }
       this.tensors = tensors
       this.bostonDataIsLoading = false
     })
@@ -266,8 +314,14 @@ class BostonStore {
 decorate(BostonStore, {
   run: action,
   fetchBostonFiles: action,
+  trainingData: observable,
   tensors: observable,
   numFeatures: observable,
+  inputTensorShape: computed,
+  plottablePredictionDataLinear: computed,
+  plottablePredictionData1Hidden: computed,
+  plottablePredictionData2Hidden: computed,
+  plottableReferenceLine: computed,
   bostonDataIsLoading: observable,
   currentEpoch: observable,
   trainingState: observable,

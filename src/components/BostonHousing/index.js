@@ -3,13 +3,10 @@ import _ from 'lodash'
 import { observer, inject } from 'mobx-react'
 import { Grid, Button, Segment } from 'semantic-ui-react'
 import LossChart from './LossChart'
+import ActualVsPredicted from '../charts/ActualVsPredicted'
 import { PrimaryHeader } from '../Elements/Header'
 import { Helmet } from 'react-helmet'
-import {
-  WeightsMagnitudeTable,
-  ModelParametersTable,
-  FinalLossTable
-} from './tables'
+import { WeightsMagnitudeTable, ModelParametersTable, FinalLossTable } from './tables'
 
 class BostonHousing extends Component {
   trainLinearRegressor = () => {
@@ -39,16 +36,18 @@ class BostonHousing extends Component {
       averagePrice,
       baselineLoss,
       weightsListLinearSorted,
-      readyToModel
+      readyToModel,
+      plottablePredictionDataLinear,
+      plottablePredictionData1Hidden,
+      plottablePredictionData2Hidden,
+      plottableReferenceLine
     } = this.props.bostonStore
     return (
       <div>
         <Helmet>
-          <title>
-            Multivariate Regression in Tensorflow.js (Boston Housing)
-          </title>
+          <title>Multivariate Regression in Tensorflow.js (Boston Housing)</title>
         </Helmet>
-        <Grid columns='equal' padded divided>
+        <Grid columns="equal" padded divided>
           <Grid.Row>
             <Grid.Column>
               <Segment basic>
@@ -56,28 +55,25 @@ class BostonHousing extends Component {
                 <h2>Compare different models for housing price prediction.</h2>
                 <h4>
                   A recreation of the{' '}
-                  <a href='https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing'>
+                  <a href="https://github.com/tensorflow/tfjs-examples/tree/master/boston-housing">
                     Boston Housing data example
                   </a>{' '}
-                  using a slightly more functional approach to Tensorflow.js
-                  training and inference. Views in React and Recharts (instead
-                  of tfjs-vis).
+                  using a slightly more functional approach to Tensorflow.js training and inference.
+                  Views in React and Recharts (instead of tfjs-vis).
                 </h4>
               </Segment>
               <PrimaryHeader>Description</PrimaryHeader>
               <Segment basic>
                 <p>
-                  This example shows you how to perform regression with more
-                  than one input feature using the Boston Housing Dataset, which
-                  is a famous dataset derived from information collected by the
-                  U.S. Census Service concerning housing in the area of Boston
-                  Massachusetts.
+                  This example shows you how to perform regression with more than one input feature
+                  using the Boston Housing Dataset, which is a famous dataset derived from
+                  information collected by the U.S. Census Service concerning housing in the area of
+                  Boston Massachusetts.
                 </p>
                 <p>
-                  It allows you to compare the perfomance of 3 different models
-                  for predicting the house prices. When training the linear
-                  model, it will also display the weights (by absolute value) of
-                  the model and the feature associated with each of those
+                  It allows you to compare the perfomance of 3 different models for predicting the
+                  house prices. When training the linear model, it will also display the weights (by
+                  absolute value) of the model and the feature associated with each of those
                   weights.
                 </p>
               </Segment>
@@ -122,11 +118,16 @@ class BostonHousing extends Component {
               )}
               <Button
                 fluid
-                color='orange'
+                color="orange"
                 disabled={!readyToModel}
                 onClick={this.trainLinearRegressor}>
                 Train Linear Regressor
               </Button>
+              <ActualVsPredicted
+                data={plottablePredictionDataLinear}
+                referenceLineData={plottableReferenceLine}
+                isTraining={_.isEmpty(plottablePredictionDataLinear)}
+              />
             </Grid.Column>
 
             {/**
@@ -135,20 +136,20 @@ class BostonHousing extends Component {
             <Grid.Column>
               {trainingState['oneHidden'] !== 'None' && (
                 <div>
-                  <LossChart modelName='oneHidden' />
+                  <LossChart modelName="oneHidden" />
                   <h4>
-                    Epoch {currentEpoch['oneHidden'] + 1} of {NUM_EPOCHS}{' '}
-                    completed
+                    Epoch {currentEpoch['oneHidden'] + 1} of {NUM_EPOCHS} completed
                   </h4>
                 </div>
               )}
-              <Button
-                fluid
-                color='orange'
-                disabled={!readyToModel}
-                onClick={this.trainLinearNN1}>
+              <Button fluid color="orange" disabled={!readyToModel} onClick={this.trainLinearNN1}>
                 Train Neural Network Regressor (1 hidden layer)
               </Button>
+              <ActualVsPredicted
+                data={plottablePredictionData1Hidden}
+                referenceLineData={plottableReferenceLine}
+                isTraining={_.isEmpty(plottablePredictionData1Hidden)}
+              />
             </Grid.Column>
 
             {/**
@@ -157,20 +158,20 @@ class BostonHousing extends Component {
             <Grid.Column>
               {trainingState['twoHidden'] !== 'None' && (
                 <div>
-                  <LossChart modelName='twoHidden' />
+                  <LossChart modelName="twoHidden" />
                   <h4>
-                    Epoch {currentEpoch['twoHidden'] + 1} of {NUM_EPOCHS}{' '}
-                    completed
+                    Epoch {currentEpoch['twoHidden'] + 1} of {NUM_EPOCHS} completed
                   </h4>
                 </div>
               )}
-              <Button
-                fluid
-                color='orange'
-                disabled={!readyToModel}
-                onClick={this.trainLinearNN2}>
+              <Button fluid color="orange" disabled={!readyToModel} onClick={this.trainLinearNN2}>
                 Train Neural Network Regressor (2 hidden layers)
               </Button>
+              <ActualVsPredicted
+                data={plottablePredictionData2Hidden}
+                referenceLineData={plottableReferenceLine}
+                isTraining={_.isEmpty(plottablePredictionData2Hidden)}
+              />
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
@@ -195,7 +196,7 @@ const LossChartWrapper = inject('bostonStore')(
     }
     return (
       <div style={{ marginBottom: 20 }}>
-        <LossChart modelName='linear' />
+        <LossChart modelName="linear" />
         <h4>
           Epoch {currentEpoch + 1} of {NUM_EPOCHS} completed
         </h4>

@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import Papa from 'papaparse'
 import * as tf from '@tensorflow/tfjs'
+window.tf = tf
+
 
 /**
  * Builds and returns Linear Regression Model.
@@ -168,6 +170,24 @@ export function determineMeanAndStddev(data) {
 export function normalizeTensor(data, dataMean, dataStd) {
   return data.sub(dataMean).div(dataStd)
 }
+
+/**
+ * Convert training and predicted values into plottable values for the
+ * Actual vs Predicted chart
+ */
+export function calculatePlottablePredictedVsActualData(trainingData, model, inputTensorShape) {
+  if (_.isEmpty(model)) {
+    return []
+  }
+  const { trainFeatures, trainTarget } = trainingData
+  const predictions = _.map(trainFeatures, featuresSet => {
+    return model.predict(tf.tensor(featuresSet, inputTensorShape)).dataSync()[0]
+  })
+  return _.map(trainTarget, (target, targetIndex) => {
+    return { actual: target[0], predicted: _.round(predictions[targetIndex]) }
+  })
+}
+
 
 /**
  * Shuffles data and target (maintaining alignment) using Fisher-Yates
