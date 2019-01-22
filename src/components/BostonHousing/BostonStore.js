@@ -258,8 +258,8 @@ class BostonStore {
       return []
     }
     const {trainTarget, testTarget} = this.trainingData
-    const allTargets = trainTarget.concat(testTarget)
-    const range = _.range( _.round(_.min(allTargets), _.max(allTargets)))
+    const allTargets = _.map(trainTarget.concat(testTarget), target => target[0])
+    const range = _.range( _.round(_.min(allTargets)), _.round(_.max(allTargets)))
     return _.map(range, val => {
       return { actual: val, predicted: val }
     })
