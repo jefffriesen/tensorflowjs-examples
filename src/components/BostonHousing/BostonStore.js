@@ -94,6 +94,11 @@ class BostonStore {
     oneHidden: null,
     twoHidden: null
   }
+  model = {
+    linear: null,
+    oneHidden: null,
+    twoHidden: null
+  }
 
   get weightsListLinearSorted() {
     return this.weightsList.linear
@@ -132,7 +137,7 @@ class BostonStore {
       model,
       tensors: this.tensors,
       modelName: 'oneHidden',
-      weightsIllustration: false,
+      weightsIllustration: false, // Cannot calculate weights with this type of model
       LEARNING_RATE: this.LEARNING_RATE,
       BATCH_SIZE: this.BATCH_SIZE,
       NUM_EPOCHS: this.NUM_EPOCHS
@@ -145,7 +150,7 @@ class BostonStore {
       model,
       tensors: this.tensors,
       modelName: 'twoHidden',
-      weightsIllustration: false,
+      weightsIllustration: false, // Cannot calculate weights with this type of model
       LEARNING_RATE: this.LEARNING_RATE,
       BATCH_SIZE: this.BATCH_SIZE,
       NUM_EPOCHS: this.NUM_EPOCHS
@@ -207,6 +212,7 @@ class BostonStore {
             finalValidationSetLoss
           } = calculateFinalLoss(this.trainLogs[modelName])
           runInAction(() => {
+            this.model = model
             this.testSetLoss[modelName] = testSetLoss
             this.finalTrainSetLoss[modelName] = finalTrainSetLoss
             this.finalValidationSetLoss[modelName] = finalValidationSetLoss
@@ -270,6 +276,7 @@ decorate(BostonStore, {
   finalTrainSetLoss: observable,
   finalValidationSetLoss: observable,
   testSetLoss: observable,
+  model: observable,
   weightsListLinearSorted: computed,
   averagePrice: computed,
   baselineLoss: computed,

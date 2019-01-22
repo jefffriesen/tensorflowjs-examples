@@ -70,7 +70,7 @@ export function calculateTestSetLoss(model, tensors, BATCH_SIZE) {
   return _.round(testSetLoss.dataSync()[0])
 }
 
-export function calculateFinalLoss(trainLogs, model, BATCH_SIZE) {
+export function calculateFinalLoss(trainLogs) {
   const finalTrainSetLoss = trainLogs[trainLogs.length - 1].loss
   const finalValidationSetLoss = trainLogs[trainLogs.length - 1].val_loss
   return {
@@ -89,13 +89,13 @@ export function arraysToTensors(
   testFeaturesArray,
   testTargetArray
 ) {
-  let rawTrainFeatures = tf.tensor2d(trainFeaturesArray)
-  let trainTarget = tf.tensor2d(trainTargetArray)
-  let rawTestFeatures = tf.tensor2d(testFeaturesArray)
-  let testTarget = tf.tensor2d(testTargetArray)
+  const rawTrainFeatures = tf.tensor2d(trainFeaturesArray)
+  const trainTarget = tf.tensor2d(trainTargetArray)
+  const rawTestFeatures = tf.tensor2d(testFeaturesArray)
+  const testTarget = tf.tensor2d(testTargetArray)
 
   // Normalize mean and standard deviation of data.
-  let { dataMean, dataStd } = determineMeanAndStddev(rawTrainFeatures)
+  const { dataMean, dataStd } = determineMeanAndStddev(rawTrainFeatures)
 
   return {
     trainFeatures: normalizeTensor(rawTrainFeatures, dataMean, dataStd),

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 import { observer, inject } from 'mobx-react'
-import { Grid, Button, Header, Segment } from 'semantic-ui-react'
+import { Grid, Button, Segment } from 'semantic-ui-react'
 import LossChart from './LossChart'
 import { PrimaryHeader } from '../Elements/Header'
 import { Helmet } from 'react-helmet'
