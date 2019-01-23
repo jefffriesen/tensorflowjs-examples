@@ -3,7 +3,6 @@ import Papa from 'papaparse'
 import * as tf from '@tensorflow/tfjs'
 window.tf = tf
 
-
 /**
  * Builds and returns Linear Regression Model.
  *
@@ -29,7 +28,7 @@ export function multiLayerPerceptronRegressionModel1Hidden(numFeatures) {
       inputShape: [numFeatures],
       units: 50,
       activation: 'sigmoid',
-      kernelInitializer: 'leCunNormal'
+      kernelInitializer: 'leCunNormal',
     })
   )
   model.add(tf.layers.dense({ units: 1 }))
@@ -50,14 +49,14 @@ export function multiLayerPerceptronRegressionModel2Hidden(numFeatures) {
       inputShape: [numFeatures],
       units: 50,
       activation: 'sigmoid',
-      kernelInitializer: 'leCunNormal'
+      kernelInitializer: 'leCunNormal',
     })
   )
   model.add(
     tf.layers.dense({
       units: 50,
       activation: 'sigmoid',
-      kernelInitializer: 'leCunNormal'
+      kernelInitializer: 'leCunNormal',
     })
   )
   model.add(tf.layers.dense({ units: 1 }))
@@ -67,7 +66,7 @@ export function multiLayerPerceptronRegressionModel2Hidden(numFeatures) {
 
 export function calculateTestSetLoss(model, tensors, BATCH_SIZE) {
   const testSetLoss = model.evaluate(tensors.testFeatures, tensors.testTarget, {
-    batchSize: BATCH_SIZE
+    batchSize: BATCH_SIZE,
   })
   return _.round(testSetLoss.dataSync()[0])
 }
@@ -77,7 +76,7 @@ export function calculateFinalLoss(trainLogs) {
   const finalValidationSetLoss = trainLogs[trainLogs.length - 1].val_loss
   return {
     finalTrainSetLoss: _.round(finalTrainSetLoss, 2),
-    finalValidationSetLoss: _.round(finalValidationSetLoss, 2)
+    finalValidationSetLoss: _.round(finalValidationSetLoss, 2),
   }
 }
 
@@ -103,7 +102,7 @@ export function arraysToTensors(
     trainFeatures: normalizeTensor(rawTrainFeatures, dataMean, dataStd),
     trainTarget,
     testFeatures: normalizeTensor(rawTestFeatures, dataMean, dataStd),
-    testTarget
+    testTarget,
   }
 }
 
@@ -123,7 +122,7 @@ export function describeKernelElements(kernel, featureDescriptions) {
   return _.map(kernel, (kernalValue, index) => {
     return {
       description: featureDescriptions[index],
-      value: _.round(kernalValue, 2)
+      value: _.round(kernalValue, 2),
     }
   })
 }
@@ -188,10 +187,9 @@ export function calculatePlottablePredictedVsActualData(trainingData, model, inp
   //   return model.predict(tf.tensor(featuresSet, inputTensorShape)).dataSync()[0]
   // })
   return _.map(trainTarget, (target, targetIndex) => {
-    return { actual: target[0], predicted: _.round(normalized_predictions[targetIndex]) }
+    return { actual: target[0], predicted: normalized_predictions[targetIndex] }
   })
 }
-
 
 /**
  * Shuffles data and target (maintaining alignment) using Fisher-Yates
@@ -243,9 +241,6 @@ export async function loadCsv(filename, basePath, csvOptions) {
     }
     return parseCsv(data)
   } catch (error) {
-    console.error(
-      `File load fail for : ${filename}. Make sure CSV has all headers.`,
-      error
-    )
+    console.error(`File load fail for : ${filename}. Make sure CSV has all headers.`, error)
   }
 }
