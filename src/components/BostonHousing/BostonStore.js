@@ -56,7 +56,7 @@ class BostonStore {
     autorun(() => this.fetchBostonFiles(this.bostonFilesInfo))
   }
 
-  NUM_EPOCHS = 50
+  NUM_EPOCHS = 200
   BATCH_SIZE = 40
   LEARNING_RATE = 0.01
   numFeatures = null

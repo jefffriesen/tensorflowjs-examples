@@ -170,7 +170,6 @@ export function determineMeanAndStddev(data) {
 export function normalizeTensor(data, dataMean, dataStd) {
   return data.sub(dataMean).div(dataStd)
 }
-
 /**
  * Convert training and predicted values into plottable values for the
  * Actual vs Predicted chart
@@ -180,11 +179,16 @@ export function calculatePlottablePredictedVsActualData(trainingData, model, inp
     return []
   }
   const { trainFeatures, trainTarget } = trainingData
-  const predictions = _.map(trainFeatures, featuresSet => {
-    return model.predict(tf.tensor(featuresSet, inputTensorShape)).dataSync()[0]
-  })
+  const rawTrainFeatures = tf.tensor2d(trainFeatures)
+  // Normalize mean and standard deviation of data.
+  const { dataMean, dataStd } = determineMeanAndStddev(rawTrainFeatures)
+  const normalized_features = normalizeTensor(rawTrainFeatures, dataMean, dataStd)
+  const normalized_predictions = model.predict(normalized_features).dataSync()
+  // const predictions = _.map(trainFeatures, featuresSet => {
+  //   return model.predict(tf.tensor(featuresSet, inputTensorShape)).dataSync()[0]
+  // })
   return _.map(trainTarget, (target, targetIndex) => {
-    return { actual: target[0], predicted: _.round(predictions[targetIndex]) }
+    return { actual: target[0], predicted: _.round(normalized_predictions[targetIndex]) }
   })
 }
 
