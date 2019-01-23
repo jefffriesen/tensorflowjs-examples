@@ -1,14 +1,6 @@
 import _ from 'lodash'
 import * as tf from '@tensorflow/tfjs'
-import {
-  configure,
-  observable,
-  decorate,
-  action,
-  computed,
-  runInAction,
-  autorun
-} from 'mobx'
+import { configure, observable, decorate, action, computed, runInAction, autorun } from 'mobx'
 import {
   loadCsv,
   arraysToTensors,
@@ -21,7 +13,7 @@ import {
   multiLayerPerceptronRegressionModel2Hidden,
   calculateFinalLoss,
   calculateTestSetLoss,
-  calculatePlottablePredictedVsActualData
+  calculatePlottablePredictedVsActualData,
 } from './utils'
 configure({ enforceActions: 'observed' })
 
@@ -30,7 +22,7 @@ const csvOptions = {
   header: true,
   dynamicTyping: true,
   skipEmptyLines: true,
-  delimiter: ','
+  delimiter: ',',
 }
 
 const featureDescriptions = [
@@ -45,7 +37,7 @@ const featureDescriptions = [
   'Distance to highway',
   'Tax rate',
   'School class size',
-  'School drop-out rate'
+  'School drop-out rate',
 ]
 
 /**
@@ -56,7 +48,7 @@ class BostonStore {
     autorun(() => this.fetchBostonFiles(this.bostonFilesInfo))
   }
 
-  NUM_EPOCHS = 200
+  NUM_EPOCHS = 50
   BATCH_SIZE = 40
   LEARNING_RATE = 0.01
   numFeatures = null
@@ -66,46 +58,44 @@ class BostonStore {
   currentEpoch = {
     linear: 0,
     oneHidden: 0,
-    twoHidden: 0
+    twoHidden: 0,
   }
   trainingState = {
     linear: 'None',
     oneHidden: 'None',
-    twoHidden: 'None'
+    twoHidden: 'None',
   }
   model = {
     linear: null,
     oneHidden: null,
-    twoHidden: null
+    twoHidden: null,
   }
   trainLogs = {
     linear: [],
     oneHidden: [],
-    twoHidden: []
+    twoHidden: [],
   }
   weightsList = {
-    linear: []
+    linear: [],
   }
   finalTrainSetLoss = {
     linear: null,
     oneHidden: null,
-    twoHidden: null
+    twoHidden: null,
   }
   finalValidationSetLoss = {
     linear: null,
     oneHidden: null,
-    twoHidden: null
+    twoHidden: null,
   }
   testSetLoss = {
     linear: null,
     oneHidden: null,
-    twoHidden: null
+    twoHidden: null,
   }
 
   get weightsListLinearSorted() {
-    return this.weightsList.linear
-      .slice()
-      .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+    return this.weightsList.linear.slice().sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
   }
 
   get averagePrice() {
@@ -129,7 +119,7 @@ class BostonStore {
       weightsIllustration: true,
       LEARNING_RATE: this.LEARNING_RATE,
       BATCH_SIZE: this.BATCH_SIZE,
-      NUM_EPOCHS: this.NUM_EPOCHS
+      NUM_EPOCHS: this.NUM_EPOCHS,
     })
   }
 
@@ -142,7 +132,7 @@ class BostonStore {
       weightsIllustration: false, // Cannot calculate weights with this type of model
       LEARNING_RATE: this.LEARNING_RATE,
       BATCH_SIZE: this.BATCH_SIZE,
-      NUM_EPOCHS: this.NUM_EPOCHS
+      NUM_EPOCHS: this.NUM_EPOCHS,
     })
   }
 
@@ -155,7 +145,7 @@ class BostonStore {
       weightsIllustration: false, // Cannot calculate weights with this type of model
       LEARNING_RATE: this.LEARNING_RATE,
       BATCH_SIZE: this.BATCH_SIZE,
-      NUM_EPOCHS: this.NUM_EPOCHS
+      NUM_EPOCHS: this.NUM_EPOCHS,
     })
   }
 
@@ -172,11 +162,11 @@ class BostonStore {
     weightsIllustration,
     LEARNING_RATE,
     BATCH_SIZE,
-    NUM_EPOCHS
+    NUM_EPOCHS,
   }) {
     model.compile({
       optimizer: tf.train.sgd(LEARNING_RATE),
-      loss: 'meanSquaredError'
+      loss: 'meanSquaredError',
     })
     this.trainingState[modelName] = 'Training'
     await model.fit(tensors.trainFeatures, tensors.trainTarget, {
@@ -204,15 +194,10 @@ class BostonStore {
           }
         },
         onTrainEnd: () => {
-          const testSetLoss = calculateTestSetLoss(
-            model,
-            tensors,
-            this.BATCH_SIZE
+          const testSetLoss = calculateTestSetLoss(model, tensors, this.BATCH_SIZE)
+          const { finalTrainSetLoss, finalValidationSetLoss } = calculateFinalLoss(
+            this.trainLogs[modelName]
           )
-          const {
-            finalTrainSetLoss,
-            finalValidationSetLoss
-          } = calculateFinalLoss(this.trainLogs[modelName])
           runInAction(() => {
             this.model[modelName] = model
             this.testSetLoss[modelName] = testSetLoss
@@ -220,8 +205,8 @@ class BostonStore {
             this.finalValidationSetLoss[modelName] = finalValidationSetLoss
             this.trainingState[modelName] = 'Trained'
           })
-        }
-      }
+        },
+      },
     })
   }
 
@@ -257,9 +242,9 @@ class BostonStore {
     if (_.isEmpty(this.trainingData)) {
       return []
     }
-    const {trainTarget, testTarget} = this.trainingData
+    const { trainTarget, testTarget } = this.trainingData
     const allTargets = _.map(trainTarget.concat(testTarget), target => target[0])
-    const range = _.range( _.round(_.min(allTargets)), _.round(_.max(allTargets)))
+    const range = _.range(_.round(_.min(allTargets)), _.round(_.max(allTargets)))
     return _.map(range, val => {
       return { actual: val, predicted: val }
     })
@@ -267,28 +252,17 @@ class BostonStore {
 
   async fetchBostonFiles(fileInfos) {
     this.bostonDataIsLoading = true
-    const [
-      trainFeatures,
-      trainTarget,
-      testFeatures,
-      testTarget
-    ] = await Promise.all([
+    const [trainFeatures, trainTarget, testFeatures, testTarget] = await Promise.all([
       loadCsv('train-data.csv', basePath, csvOptions),
       loadCsv('train-target.csv', basePath, csvOptions),
       loadCsv('test-data.csv', basePath, csvOptions),
-      loadCsv('test-target.csv', basePath, csvOptions)
+      loadCsv('test-target.csv', basePath, csvOptions),
     ])
     const numFeatures = _.size(_.first(trainFeatures))
 
     // Shuffle as a function with a return value instead of mutate in place
-    const [shuffledTrainFeatures, shuffledTrainTarget] = shuffle(
-      trainFeatures,
-      trainTarget
-    )
-    const [shuffledTestFeatures, shuffledTestTarget] = shuffle(
-      testFeatures,
-      testTarget
-    )
+    const [shuffledTrainFeatures, shuffledTrainTarget] = shuffle(trainFeatures, trainTarget)
+    const [shuffledTestFeatures, shuffledTestTarget] = shuffle(testFeatures, testTarget)
 
     // Convert to normalized tensors
     const tensors = arraysToTensors(
@@ -303,7 +277,7 @@ class BostonStore {
         trainFeatures: shuffledTrainFeatures,
         testFeatures: shuffledTestFeatures,
         trainTarget: shuffledTrainTarget,
-        testTarget: shuffledTestTarget
+        testTarget: shuffledTestTarget,
       }
       this.tensors = tensors
       this.bostonDataIsLoading = false
@@ -334,7 +308,7 @@ decorate(BostonStore, {
   weightsListLinearSorted: computed,
   averagePrice: computed,
   baselineLoss: computed,
-  readyToModel: computed
+  readyToModel: computed,
 })
 
 export default BostonStore
