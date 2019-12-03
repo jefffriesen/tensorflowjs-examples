@@ -21,7 +21,7 @@ let kerasImportStore = new KerasImportStore()
 // not for production use
 window.curveStore = curveStore
 window.bostonStore = bostonStore
-window.kerasImportStore = bostonStore
+window.kerasImportStore = kerasImportStore
 
 const App = () => (
   <Provider curveStore={curveStore} bostonStore={bostonStore} kerasImportStore={kerasImportStore}>
