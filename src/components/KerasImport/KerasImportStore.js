@@ -4,7 +4,7 @@ import { configure, observable, decorate, computed, autorun } from 'mobx'
 // import { arraysToTensors } from './utils'
 configure({ enforceActions: 'observed' })
 
-const model1Path = 'data/keras_model/countEEOnlyPercent.json'
+const model1Path = 'data/tfjs_models/countEEOnlyPercent/model.json'
 
 class KerasImportStore {
   constructor() {
@@ -12,22 +12,22 @@ class KerasImportStore {
   }
 
   kerasModel = null
+  modelIsLoaded = false
 
   get modelLoaded() {
     return !_.isEmpty(this.kerasModel)
   }
 
   async loadKerasModel() {
-    // this.kerasModel = await tf.loadLayersModel(model1Path)
-    const response = await fetch(model1Path)
-    const file = await response.json()
-    this.kerasModel = file // this isn't really the keras model, just the json file
+    this.kerasModel = await tf.loadLayersModel(model1Path)
+    this.modelIsLoaded = true
   }
 }
 
 decorate(KerasImportStore, {
-  kerasModel: observable.shallow,
-  modelLoaded: computed,
+  // kerasModel: observable,
+  // modelLoaded: computed,
+  modelIsLoaded: observable,
 })
 
 export default KerasImportStore

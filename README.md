@@ -49,3 +49,19 @@ The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Miscellaneous Notes
+
+### Converting Keras models so they can be loaded by tfjs
+
+```
+https://github.com/tensorflow/tfjs/tree/master/tfjs-converter
+
+tensorflowjs_converter \
+	--input_format=keras \
+	--output_format=tfjs_layers_model \
+	keras_model.hdf5 \
+	loadable_tfjs_model
+
+If having quantization errors, see this thread: https://github.com/tensorflow/tfjs/issues/1474
+```
