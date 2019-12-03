@@ -1,0 +1,341 @@
+{
+  "generatedBy": "keras v2.1.4",
+  "modelTopology": {
+    "model_config": {
+      "class_name": "Sequential",
+      "config": [
+        {
+          "class_name": "Dense",
+          "config": {
+            "use_bias": true,
+            "dtype": "float32",
+            "batch_input_shape": [
+              null,
+              8
+            ],
+            "bias_regularizer": null,
+            "activation": "relu",
+            "units": 1000,
+            "kernel_constraint": null,
+            "bias_constraint": null,
+            "kernel_initializer": {
+              "class_name": "RandomUniform",
+              "config": {
+                "maxval": 0.05,
+                "minval": -0.05,
+                "seed": null
+              }
+            },
+            "activity_regularizer": null,
+            "name": "dense_1",
+            "trainable": true,
+            "kernel_regularizer": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            }
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "use_bias": true,
+            "bias_regularizer": null,
+            "activation": "relu",
+            "units": 1000,
+            "kernel_constraint": null,
+            "bias_constraint": null,
+            "kernel_initializer": {
+              "class_name": "RandomUniform",
+              "config": {
+                "maxval": 0.05,
+                "minval": -0.05,
+                "seed": null
+              }
+            },
+            "activity_regularizer": null,
+            "name": "dense_2",
+            "trainable": true,
+            "kernel_regularizer": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            }
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "use_bias": true,
+            "bias_regularizer": null,
+            "activation": "relu",
+            "units": 800,
+            "kernel_constraint": null,
+            "bias_constraint": null,
+            "kernel_initializer": {
+              "class_name": "RandomUniform",
+              "config": {
+                "maxval": 0.05,
+                "minval": -0.05,
+                "seed": null
+              }
+            },
+            "activity_regularizer": null,
+            "name": "dense_3",
+            "trainable": true,
+            "kernel_regularizer": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            }
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "use_bias": true,
+            "bias_regularizer": null,
+            "activation": "relu",
+            "units": 500,
+            "kernel_constraint": null,
+            "bias_constraint": null,
+            "kernel_initializer": {
+              "class_name": "RandomUniform",
+              "config": {
+                "maxval": 0.05,
+                "minval": -0.05,
+                "seed": null
+              }
+            },
+            "activity_regularizer": null,
+            "name": "dense_4",
+            "trainable": true,
+            "kernel_regularizer": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            }
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "use_bias": true,
+            "bias_regularizer": null,
+            "activation": "relu",
+            "units": 100,
+            "kernel_constraint": null,
+            "bias_constraint": null,
+            "kernel_initializer": {
+              "class_name": "RandomUniform",
+              "config": {
+                "maxval": 0.05,
+                "minval": -0.05,
+                "seed": null
+              }
+            },
+            "activity_regularizer": null,
+            "name": "dense_5",
+            "trainable": true,
+            "kernel_regularizer": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            }
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "use_bias": true,
+            "bias_regularizer": null,
+            "activation": "relu",
+            "units": 8,
+            "kernel_constraint": null,
+            "bias_constraint": null,
+            "kernel_initializer": {
+              "class_name": "RandomUniform",
+              "config": {
+                "maxval": 0.05,
+                "minval": -0.05,
+                "seed": null
+              }
+            },
+            "activity_regularizer": null,
+            "name": "dense_6",
+            "trainable": true,
+            "kernel_regularizer": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            }
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "use_bias": true,
+            "bias_regularizer": null,
+            "activation": "linear",
+            "units": 1,
+            "kernel_constraint": null,
+            "bias_constraint": null,
+            "kernel_initializer": {
+              "class_name": "RandomUniform",
+              "config": {
+                "maxval": 0.05,
+                "minval": -0.05,
+                "seed": null
+              }
+            },
+            "activity_regularizer": null,
+            "name": "dense_7",
+            "trainable": true,
+            "kernel_regularizer": null,
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            }
+          }
+        }
+      ]
+    },
+    "training_config": {
+      "sample_weight_mode": null,
+      "loss_weights": null,
+      "metrics": [],
+      "optimizer_config": {
+        "class_name": "Adam",
+        "config": {
+          "amsgrad": false,
+          "decay": 0.0,
+          "beta_1": 0.8999999761581421,
+          "lr": 0.0010000000474974513,
+          "beta_2": 0.9990000128746033,
+          "epsilon": 1E-7
+        }
+      },
+      "loss": "mae"
+    },
+    "keras_version": "2.1.4",
+    "backend": "tensorflow"
+  },
+  "convertedBy": "TensorFlow.js Converter v1.2.10.1",
+  "weightsManifest": [
+    {
+      "paths": [
+        "group1-shard1of3.bin",
+        "group1-shard2of3.bin",
+        "group1-shard3of3.bin"
+      ],
+      "weights": [
+        {
+          "shape": [
+            8,
+            1000
+          ],
+          "name": "dense_1_1/kernel",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1000
+          ],
+          "name": "dense_1_1/bias",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1000,
+            1000
+          ],
+          "name": "dense_2_1/kernel",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1000
+          ],
+          "name": "dense_2_1/bias",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1000,
+            800
+          ],
+          "name": "dense_3_1/kernel",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            800
+          ],
+          "name": "dense_3_1/bias",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            800,
+            500
+          ],
+          "name": "dense_4_1/kernel",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            500
+          ],
+          "name": "dense_4_1/bias",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            500,
+            100
+          ],
+          "name": "dense_5_1/kernel",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            100
+          ],
+          "name": "dense_5_1/bias",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            100,
+            8
+          ],
+          "name": "dense_6_1/kernel",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            8
+          ],
+          "name": "dense_6_1/bias",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            8,
+            1
+          ],
+          "name": "dense_7_1/kernel",
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1
+          ],
+          "name": "dense_7_1/bias",
+          "dtype": "float32"
+        }
+      ]
+    }
+  ],
+  "format": "layers-model"
+}

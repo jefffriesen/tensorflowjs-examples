@@ -40,7 +40,7 @@ class BostonHousing extends Component {
       plottablePredictionDataLinear,
       plottablePredictionData1Hidden,
       plottablePredictionData2Hidden,
-      plottableReferenceLine
+      plottableReferenceLine,
     } = this.props.bostonStore
     return (
       <div>
