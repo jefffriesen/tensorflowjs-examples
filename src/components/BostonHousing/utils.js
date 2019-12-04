@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import Papa from 'papaparse'
+// import { toJS } from 'mobx'
 import * as tf from '@tensorflow/tfjs'
 window.tf = tf
 
@@ -178,6 +179,7 @@ export function calculatePlottablePredictedVsActualData(trainingData, model, inp
     return []
   }
   const { trainFeatures, trainTarget } = trainingData
+  // console.log('trainFeatures: ', toJS(trainFeatures))
   const rawTrainFeatures = tf.tensor2d(trainFeatures)
   // Normalize mean and standard deviation of data.
   const { dataMean, dataStd } = determineMeanAndStddev(rawTrainFeatures)
