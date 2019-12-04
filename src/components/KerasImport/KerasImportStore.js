@@ -32,7 +32,7 @@ class KerasImportStore {
 
     const inputs = tf.tensor2d([row2, row99169, row99171])
     const prediction = this.countEEOnlyPercentModel.predict(inputs).dataSync()
-    console.log('prediction: ', prediction) // fail: does it need to be normalized?
+    console.log('prediction: ', prediction) // incorrect prediction: does it need to be normalized?
 
     this.modelIsLoaded = true
   }
